@@ -1,0 +1,42 @@
+#修改端口号
+server:
+  port: 8800
+#配置数据库
+database:
+  #url: jdbc:mysql://172.24.34.140:3306/deal?useUnicode=true&characterEncoding=utf-8&useSSL=false
+  url: jdbc:mysql://39.106.188.22:3306/deal?useUnicode=true&characterEncoding=utf-8&useSSL=false
+  username: root
+  password: root
+spring:
+  datasource:
+    url: ${database.url}
+    username: ${database.username}
+    password: ${database.password}
+    type: com.alibaba.druid.pool.DruidDataSource #阿里巴巴数据源
+  servlet:
+    multipart:
+      max-file-size: 10MB # 限制文件上传的大小
+      enabled: true  #是否启用文件上传功能
+  redis:
+    #host: 172.24.34.140
+    host: 39.106.188.22
+    port: 6379
+    database: 0
+    password: sht123
+    timeout: 5000
+#mybatis下划线转驼峰配置
+mybatis:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  #打印sql语句
+    map-underscore-to-camel-case: true
+#Email配置
+email:
+  host-name: smtp.163.com  #服务地址，可以直接在web端登录，找到smtp服务看到，163邮箱默认开放25端口，可暂时不设置
+  authentication:
+    username: shenhongtao_12
+    password: sht851955 #手动的设置令牌
+  form:
+    mail: shenhongtao_12@163.com #发送方，必须为你设置的username一致
+    name: 二手交易平台 #发送方显示的名称，可以随意设置
+  charset: UTF-8 #编码格式，一般设置为UTF-8
+
