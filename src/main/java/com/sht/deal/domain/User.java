@@ -17,10 +17,11 @@ public class User
 	private String email;
 	private String password;
 	private String nickname;
+	private String intro;  //介绍
 	private String phone;
 	private String sex;
 	private String img;
-	private String flag;
+	private String flag; //判断是否修改过用户名，只能修改一次
 
 	@Transient
 	private String code;

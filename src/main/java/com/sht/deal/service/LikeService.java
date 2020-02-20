@@ -45,9 +45,9 @@ public class LikeService {
                 String[] num = array1[i].split(":");
                 Example example = new Example(Love.class);
                 Example.Criteria criteria = example.createCriteria();
-                criteria.andEqualTo("type", num[0].trim());
-                criteria.andEqualTo("typeid", Integer.valueOf(num[1].trim()));
-                criteria.andEqualTo("userid", Integer.valueOf(num[2].trim()));
+                criteria.andEqualTo("type", num[0].trim());  //留言还是回复
+                criteria.andEqualTo("typeid", Integer.valueOf(num[1].trim())); //留言id
+                criteria.andEqualTo("userid", Integer.valueOf(num[2].trim())); //userid
                 List<Love> loveList = this.likeMapper.selectByExample(example);
                 if (value.get(i).equals("0")) {
                     if (loveList.size() > 0) {

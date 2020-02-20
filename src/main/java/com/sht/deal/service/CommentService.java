@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class CommentService {
+
     @Autowired
     private CommentMapper commentMapper;
     @Autowired

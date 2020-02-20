@@ -4,7 +4,9 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sht.deal.Mapper.GoodsMapper;
 import com.sht.deal.Mapper.UserMapper;
+import com.sht.deal.domain.Comment;
 import com.sht.deal.domain.Goods;
+import com.sht.deal.domain.Reply;
 import com.sht.deal.domain.User;
 import com.sht.deal.exception.AllException;
 import com.sht.deal.service.CollectService;
@@ -15,6 +17,7 @@ import com.sht.deal.utils.PageResult;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,7 +90,9 @@ public class GoodsService {
 
         User user = this.userService.findById(goods.getUserid());
         goods.setUser(user);
-        goods.setCommentList(this.commentService.findByGoodsId(id, userid));
+        List<Comment> commentList = commentService.findByGoodsId(id, userid);
+        goods.setCommentList(commentList);
+        goods.setCommentNum(commentList.size());
         goods.setCode(this.collectService.checkGoods(userid, id));
         return goods;
     }
