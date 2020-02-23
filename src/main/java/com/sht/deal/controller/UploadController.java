@@ -20,7 +20,7 @@ public class UploadController {
     private UploadService uploadService;
 
     @PostMapping({"image"})
-    public ResponseEntity uploadImage(@RequestParam("file") MultipartFile file, @RequestParam(name = "site", defaultValue = "/deal/user") String site) {
+    public ResponseEntity uploadImage(@RequestParam("file") MultipartFile[] file, @RequestParam(name = "site", defaultValue = "/deal/user") String site) {
         JsonData url = this.uploadService.upload(file, site);
         if (StringUtils.isEmpty(url)) {
             throw new AllException(-1, "图片上传失败");

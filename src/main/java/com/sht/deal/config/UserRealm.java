@@ -51,7 +51,6 @@ public class UserRealm extends AuthorizingRealm {
             return null;
         }
 
-
         return new SimpleAuthenticationInfo(user, user.getPassword(), getName());
     }
 }

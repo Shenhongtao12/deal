@@ -19,6 +19,7 @@ public class ShiroConfig {
 		ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
 		shiroFilterFactoryBean.setSecurityManager(securityManager);
 		Map<String, String> filerMap = new LinkedHashMap<String, String>();
+		//开放的接口
 		filerMap.put("/api/user/save", "anon");
 		filerMap.put("/api/user/login", "anon");
 		filerMap.put("/api/goods/findByPage", "anon");
@@ -26,6 +27,8 @@ public class ShiroConfig {
 		filerMap.put("/api/goods/findByLike", "anon");
 		filerMap.put("/api/classify1/findAll", "anon");
 		filerMap.put("/api/user/loginAdmin", "anon");
+
+		//需要权限的接口
 		filerMap.put("/api/user/saveAdmin", "perms[user:add]");
 		filerMap.put("/api/user/delete", "perms[user:delete]");
 		filerMap.put("/api/user/addRoleToUser", "perms[user:role]");
