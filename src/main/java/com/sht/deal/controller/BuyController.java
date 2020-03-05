@@ -21,10 +21,11 @@ public class BuyController {
     @GetMapping("findByPage")
     public ResponseEntity<PageResult<Buy>> findByPage(
             @RequestParam(value = "userid", defaultValue = "") Integer userid,
+            @RequestParam(value = "buyName", required = false) String buyName,
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "rows", defaultValue = "10") Integer rows
     ) {
-        return ResponseEntity.ok(buyService.findByPage(userid, page, rows));
+        return ResponseEntity.ok(buyService.findByPage(userid, buyName, page, rows));
     }
 
 

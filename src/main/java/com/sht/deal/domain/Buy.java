@@ -15,6 +15,8 @@ public class Buy {
 	private String title;
     private String intro;
 	private String weixin;
+	private Double minPrice;
+	private Double maxPrice;
 	private String create_time;
 	private Integer userid;
 

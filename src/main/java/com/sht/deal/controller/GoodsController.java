@@ -1,22 +1,13 @@
 package com.sht.deal.controller;
 
-import com.sht.deal.controller.GoodsController;
 import com.sht.deal.domain.Goods;
-import com.sht.deal.exception.AllException;
 import com.sht.deal.service.GoodsService;
 import com.sht.deal.service.UploadService;
 import com.sht.deal.utils.JsonData;
 import com.sht.deal.utils.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -47,8 +38,14 @@ public class GoodsController {
 
 
     @GetMapping({"findByPage"})
-    public ResponseEntity<PageResult<Goods>> findByPage(@RequestParam(value = "id", defaultValue = "") Integer id, @RequestParam(value = "orderBy", defaultValue = "") String orderBy, @RequestParam(value = "userid", defaultValue = "") Integer userid, @RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "rows", defaultValue = "20") Integer rows) {
-        return ResponseEntity.ok(this.goodsService.findByPage(id, orderBy, userid, page, rows));
+    public ResponseEntity<PageResult<Goods>> findByPage(@RequestParam(value = "id", defaultValue = "") Integer id,
+                                                        @RequestParam(value = "classify1", defaultValue = "") Integer classify1,
+                                                        @RequestParam(value = "orderBy", defaultValue = "") String orderBy,
+                                                        @RequestParam(value = "userid", defaultValue = "") Integer userid,
+                                                        @RequestParam(value = "goodsName", required = false) String goodsName,
+                                                        @RequestParam(value = "page", defaultValue = "1") Integer page,
+                                                        @RequestParam(value = "rows", defaultValue = "20") Integer rows) {
+        return ResponseEntity.ok(this.goodsService.findByPage(id, classify1, orderBy, userid, goodsName, page, rows));
     }
 
 
@@ -64,13 +61,10 @@ public class GoodsController {
     }
 
 
-    @PostMapping({"image"})
-    public ResponseEntity uploadImage(@RequestParam("file") MultipartFile[] file, @RequestParam(name = "site", defaultValue = "/deal/goods") String site) {
+    //@PostMapping(value = "image")
+    @PostMapping(value = "/image", headers = "content-type=multipart/form-data")
+    public ResponseEntity uploadImage(@RequestParam(value = "file") MultipartFile[] file, @RequestParam(name = "site", defaultValue = "/deal/goods") String site) {
         JsonData url = this.uploadService.upload(file, site);
-        if (StringUtils.isEmpty(url)) {
-            throw new AllException(-1, "图片上传失败");
-        }
-
         return ResponseEntity.ok(url);
     }
 

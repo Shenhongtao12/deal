@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -97,8 +98,7 @@ public class GoodsService {
         return goods;
     }
 
-    public PageResult<Goods> findByPage(Integer id, String orderBy, Integer userid, int page, int rows) {
-        PageHelper.startPage(page, rows);
+    public PageResult<Goods> findByPage(Integer id, Integer classify1, String orderBy, Integer userid, String goodsName, int page, int rows) {
         Example example = new Example(Goods.class);
         Example.Criteria criteria = example.createCriteria();
         if (userid == null) {
@@ -107,12 +107,28 @@ public class GoodsService {
         if (id != null) {
             criteria.andEqualTo("classify2_id", id);
         }
-        if (orderBy.length() > 0) {
-            example.setOrderByClause(orderBy);
+        if (goodsName != null){
+            criteria.andLike("name", "%" + goodsName + "%");
         }
+
         if (userid != null) {
             criteria.andEqualTo("userid", userid);
         }
+        //拼接一级分类下的二级分类id
+        Example.Criteria c = example.createCriteria();
+        if (classify1 != null) {
+            int[] idArray = goodsMapper.findIdsByClassify1(classify1);
+            for (int i = 0; i < idArray.length; i++) {
+                c.orEqualTo("classify2_id", idArray[i]);
+
+            }
+            example.and(c);
+        }
+        //排序
+        if (orderBy.length() > 0) {
+            example.setOrderByClause(orderBy);
+        }
+        PageHelper.startPage(page, rows);
         Page<Goods> goodsPage = (Page<Goods>) this.goodsMapper.selectByExample(example);
         if (goodsPage.getTotal() < 1) {
             throw new AllException(-1, "该分类没有商品");

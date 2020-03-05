@@ -47,11 +47,14 @@ public class BuyService
 		return JsonData.buildSuccess();
 	}
 
-	public PageResult<Buy> findByPage(Integer userid, int page, int rows) {
+	public PageResult<Buy> findByPage(Integer userid, String buyName, int page, int rows) {
 		Example example = new Example(Buy.class);
 		Example.Criteria criteria = example.createCriteria();
 		if (userid != null) {
 			criteria.andEqualTo("userid", userid);
+		}
+		if (buyName != null) {
+			criteria.andLike("title", "%" + buyName + "%");
 		}
 		example.setOrderByClause("create_time desc");
 		PageHelper.startPage(page, rows);
