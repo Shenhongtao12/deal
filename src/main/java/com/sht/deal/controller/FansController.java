@@ -32,7 +32,8 @@ public class FansController {
 
 
     @GetMapping({"checkFans"})
-    public ResponseEntity checkFans(Integer userId, Integer toUserId) {
+    public ResponseEntity checkFans(@RequestParam(name = "userId") Integer userId,
+                                    @RequestParam(name = "toUserId") Integer toUserId) {
         return ResponseEntity.ok(this.fansService.checkFans(userId, toUserId));
     }
 }

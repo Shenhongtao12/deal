@@ -27,14 +27,14 @@ public class Classify2Service {
 
     public int delete(int id) {
         Classify2 classify2 = classify2Mapper.selectByPrimaryKey(id);
-        this.goodsService.deleteImage(classify2.getImage().substring(37));
+        this.goodsService.deleteImage(classify2.getImage());
         return this.classify2Mapper.deleteByPrimaryKey(id);
     }
 
     public int update(Classify2 classify2) {
         if (classify2.getImage() != null) {
             Classify2 classify = classify2Mapper.selectByPrimaryKey(classify2.getId());
-            this.goodsService.deleteImage(classify.getImage().substring(37));
+            this.goodsService.deleteImage(classify.getImage());
             return this.classify2Mapper.updateByPrimaryKeySelective(classify2);
         }
         return this.classify2Mapper.updateByPrimaryKeySelective(classify2);

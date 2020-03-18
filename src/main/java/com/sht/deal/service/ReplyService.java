@@ -104,7 +104,7 @@ public class ReplyService {
             list.addAll(commentList);
         }
         if (list.size() == 0) {
-            return JsonData.buildError("无数据");
+            return JsonData.buildSuccess("无数据");
         }else {
             Collections.sort(list);
             redisTemplate.delete(String.valueOf(userId));

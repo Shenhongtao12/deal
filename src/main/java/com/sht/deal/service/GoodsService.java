@@ -3,6 +3,7 @@ package com.sht.deal.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sht.deal.Mapper.GoodsMapper;
+import com.sht.deal.Mapper.ReplyMapper;
 import com.sht.deal.Mapper.UserMapper;
 import com.sht.deal.domain.Comment;
 import com.sht.deal.domain.Goods;
@@ -13,6 +14,7 @@ import com.sht.deal.service.CollectService;
 import com.sht.deal.service.CommentService;
 import com.sht.deal.service.UserService;
 import com.sht.deal.utils.DateUtils;
+import com.sht.deal.utils.JsonData;
 import com.sht.deal.utils.PageResult;
 
 import java.io.File;
@@ -36,6 +38,8 @@ public class GoodsService {
     private UserService userService;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private ReplyMapper replyMapper;
     @Autowired
     private UserMapper userMapper;
     @Autowired
@@ -143,51 +147,48 @@ public class GoodsService {
     }
 
 
-    public Map deleteGoods(int id) {
-        Map result = new HashMap();
+    public JsonData deleteGoods(int id) {
         Goods goods = goodsMapper.selectByPrimaryKey(id);
-        String array[] = goods.getImages().split(",");
-        for (String image : array) {
-            deleteImage(image.substring(37));
+        if (goods == null){
+            return JsonData.buildSuccess("已删除该商品");
         }
+        String array[] = goods.getImages().split(",");
+        if(array.length > 0){
+            for (String image : array) {
+                deleteImage(image);
+            }
+        }
+        //删除回复
+        Example example = new Example(Reply.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("goodsid", id);
+        replyMapper.deleteByExample(example);
+        //删除留言
+        commentService.deleteByGoodsId(id);
+        //删除收藏表中的数据
+        collectService.deleteByGoodsId(id);
+        //删除商品
         int i = goodsMapper.deleteByPrimaryKey(id);
         if (i != 1) {
             throw new AllException(-1, "删除商品失败");
-        } else {
-            result.put("code", 0);
-            result.put("msg", "删除成功");
-            return result;
         }
+        return JsonData.buildSuccess("删除成功");
     }
 
 
-    public PageResult<Goods> findByLike(String goodsName, int page, int rows) {
-        Example example = new Example(Goods.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andLike("name", "%" + goodsName + "%");
-        PageHelper.startPage(page, rows);
-        Page<Goods> pageInfo = (Page<Goods>) this.goodsMapper.selectByExample(example);
-        for (Goods goods : pageInfo) {
-
-            User user = this.userMapper.findById(goods.getUserid());
-            goods.setUser(user);
-        }
-        return new PageResult<>(pageInfo.getTotal(), pageInfo.getPages(), pageInfo.getResult());
-    }
-
-    public String deleteImage(String name) {
+    public String deleteImage(String url) {
         String resultInfo = null;
 
-        String path = "/deal/goods/" + name;
+        //String path = "/deal/goods/" + url;
+        String path = url.substring(25); //去掉http://47.93.240.205:8800
 
-        String name2 = name.substring(0, name.indexOf("thumbnail"));
-        String jpg = name.substring(name.lastIndexOf("."));
-        name2 = name2 + jpg;
-        String path2 = "/deal/goods/" + name2;
+        String name2 = path.substring(0, path.indexOf("thumbnail"));
+        String jpg = url.substring(url.lastIndexOf("."));
+        String path2 = name2 + jpg;
         File file = new File(path);
         File file2 = new File(path2);
         if (file.exists()) {
-            if (file.delete() || file2.delete()) {
+            if (file.delete() && file2.delete()) {
                 resultInfo = "删除成功";
             } else {
                 resultInfo = "删除失败";

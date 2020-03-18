@@ -71,4 +71,11 @@ public class CollectService {
 
         return (collect != null);
     }
+
+    public void deleteByGoodsId(Integer goodsId) {
+        Example example = new Example(Collect.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("goodsId", goodsId);
+        collectMapper.deleteByExample(example);
+    }
 }

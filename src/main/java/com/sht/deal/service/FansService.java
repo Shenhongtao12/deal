@@ -22,7 +22,7 @@ public class FansService {
     @Autowired
     private FansMapper fansMapper;
     @Autowired
-    private UserMapper userMapper;
+    private UserService userService;
 
     public JsonData save(Fans fans) {
         Fans fans1 = this.fansMapper.findOne(fans.getUserId(), fans.getFansId());
@@ -51,10 +51,10 @@ public class FansService {
         Page<Fans> fansPage = (Page<Fans>) this.fansMapper.selectByExample(example);
         for (Fans fans : fansPage) {
             if (userId != null) {
-                fans.setUser(this.userMapper.findById(fans.getFansId()));
+                fans.setUser(this.userService.findById(fans.getFansId()));
                 continue;
             }
-            fans.setUser(this.userMapper.findById(fans.getUserId()));
+            fans.setUser(this.userService.findById(fans.getUserId()));
         }
 
         return new PageResult<>(fansPage.getTotal(), fansPage.getPages(), fansPage.getResult());

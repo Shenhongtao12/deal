@@ -55,12 +55,6 @@ public class GoodsController {
     }
 
 
-    @GetMapping({"findByLike"})
-    public ResponseEntity<PageResult<Goods>> findByLike(@RequestParam("goodsName") String goodsName, @RequestParam(value = "page", defaultValue = "1") Integer page, @RequestParam(value = "rows", defaultValue = "20") Integer rows) {
-        return ResponseEntity.ok(this.goodsService.findByLike(goodsName, page, rows));
-    }
-
-
     //@PostMapping(value = "image")
     @PostMapping(value = "/image", headers = "content-type=multipart/form-data")
     public ResponseEntity uploadImage(@RequestParam(value = "file") MultipartFile[] file, @RequestParam(name = "site", defaultValue = "/deal/goods") String site) {
@@ -70,7 +64,7 @@ public class GoodsController {
 
 
     @PostMapping({"deleteFile"})
-    public ResponseEntity<String> delFile(String name) {
-        return ResponseEntity.ok(this.goodsService.deleteImage(name));
+    public ResponseEntity<String> delFile(@RequestParam(name = "url") String url) {
+        return ResponseEntity.ok(this.goodsService.deleteImage(url));
     }
 }

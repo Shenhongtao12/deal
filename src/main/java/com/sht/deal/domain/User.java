@@ -24,7 +24,7 @@ public class User
 	private String flag; //判断是否修改过用户名，只能修改一次
 
 	@Transient
-	private String code;
+	private String code;//邮箱验证码
 	@Transient
 	private List<Role> roleList;
 

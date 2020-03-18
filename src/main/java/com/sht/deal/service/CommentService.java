@@ -3,6 +3,7 @@ package com.sht.deal.service;
 import com.sht.deal.Mapper.CommentMapper;
 import com.sht.deal.Mapper.LikeMapper;
 import com.sht.deal.domain.Comment;
+import com.sht.deal.domain.Reply;
 import com.sht.deal.exception.AllException;
 import com.sht.deal.service.GoodsService;
 import com.sht.deal.service.ReplyService;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 
 @Service
@@ -74,5 +76,12 @@ public class CommentService {
             return JsonData.buildError("删除失败");
         }
         return JsonData.buildSuccess("删除成功");
+    }
+
+    public int deleteByGoodsId(Integer goodsId) {
+        Example example = new Example(Comment.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("goodsid", goodsId);
+        return commentMapper.deleteByExample(example);
     }
 }
