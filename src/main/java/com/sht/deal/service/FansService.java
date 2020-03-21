@@ -68,4 +68,15 @@ public class FansService {
         List<Fans> fansList = this.fansMapper.selectByExample(example);
         return (fansList.size() > 0);
     }
+
+    public Integer countNum(String type, Integer id){
+        Example example = new Example(Fans.class);
+        Example.Criteria criteria = example.createCriteria();
+        if ("fans".equals(type)) {
+            criteria.andEqualTo("fansId", id);
+        }else {
+            criteria.andEqualTo("userId", id);
+        }
+        return fansMapper.selectCountByExample(example);
+    }
 }

@@ -60,6 +60,8 @@ public class UserService {
     private RoleService roleService;
     @Autowired
     private StringRedisTemplate redisTemplate;
+    @Autowired
+    private FansService fansService;
 
     public void checkout(User user) throws Exception {
         if (user
@@ -113,8 +115,8 @@ public class UserService {
             throw new AllException(-1, String.valueOf(isExist(user)));
         }
         user.setSex("管");
-        user.setNickname(user.getUsername());
-        SimpleHash simpleHash = new SimpleHash("MD5", user.getPassword(), "second-hand+sht666", 10);
+        user.setNickname(user.getUsername());                                           //second-hand+sht666
+        SimpleHash simpleHash = new SimpleHash("MD5", user.getPassword(), SALT, 10);
         user.setPassword(simpleHash.toString());
         int i = this.userMapper.insertSelective(user);
         if (i != 1) {
@@ -127,7 +129,7 @@ public class UserService {
     public JsonData save(User user) throws Exception {
         checkout(user);
 
-        SimpleHash simpleHash = new SimpleHash("MD5", user.getPassword(), "second-hand+sht666", 10);
+        SimpleHash simpleHash = new SimpleHash("MD5", user.getPassword(), SALT, 10);
         user.setPassword(simpleHash.toString());
         if (Objects.nonNull(isExist(user))) {
             throw new AllException(-1, String.valueOf(isExist(user)));
@@ -156,15 +158,24 @@ public class UserService {
         criteria.orEqualTo("username", userParam.getUsername());
         criteria.orEqualTo("email", userParam.getUsername());
         User user = (User) this.userMapper.selectOneByExample(example);
-        SimpleHash simpleHash = new SimpleHash("MD5", userParam.getPassword(), "second-hand+sht666", 10);
+        SimpleHash simpleHash = new SimpleHash("MD5", userParam.getPassword(), SALT, 10);
         if (user == null || !user.getPassword().equals(simpleHash.toString())) {
             throw new AllException(-1, "用户名或密码错误");
         }
-        Map result = new HashMap();
+        //粉丝，关注数量
+        Map fans = new HashMap();
+        //我关注的数量
+        int Num1 = fansService.countNum("fans", user.getId());
+        //粉丝的数量
+        int Num2 = fansService.countNum("attention", user.getId());
+        fans.put("fans", Num2);
+        fans.put("attention", Num1);
         String token1 = JwtUtils.geneJsonWebToken(user);
+        Map result = new HashMap();
         result.put("code", 0);
         result.put("token", token1);
         result.put("data", user);
+        result.put("fans",fans);
         return result;
     }
 
@@ -182,7 +193,7 @@ public class UserService {
 
         subject.isAuthenticated();
 
-        SimpleHash simpleHash = new SimpleHash("MD5", userParam.getPassword(), "second-hand+sht666", 10);
+        SimpleHash simpleHash = new SimpleHash("MD5", userParam.getPassword(), SALT, 10);
         UsernamePasswordToken token = new UsernamePasswordToken(userParam.getUsername(), simpleHash.toString());
 
         try {
@@ -394,7 +405,7 @@ public class UserService {
         if (!user.getCode().toUpperCase().equals(emailCode)) {
             throw new AllException(-1, "验证码错误");
         }
-        SimpleHash simpleHash = new SimpleHash("MD5", user.getPassword(), "second-hand+sht666", 10);
+        SimpleHash simpleHash = new SimpleHash("MD5", user.getPassword(), SALT, 10);
         user.setPassword(simpleHash.toString());
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
