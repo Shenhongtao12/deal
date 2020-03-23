@@ -7,17 +7,17 @@ import java.io.File;
 import java.util.*;
 import javax.imageio.ImageIO;
 
+import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @Service
 @Transactional
 public class UploadService {
-    private static final Logger logger = LoggerFactory.getLogger(com.sht.deal.controller.UploadController.class);
+    //private static final Logger logger = LoggerFactory.getLogger(UploadService.class);
 
 
     public JsonData upload(MultipartFile[] fileArray, String site) {
@@ -34,16 +34,17 @@ public class UploadService {
 
                 BufferedImage image = ImageIO.read(file.getInputStream());
                 if (image == null) {
-                    logger.info("上传失败，文件内容不符合");
+                    log.info("上传失败，文件内容不符合");
                     return JsonData.buildError("上传失败，文件内容不符合");
                 }
                 long size = file.getSize();
                 if (size >= 10 * 1024 * 1024) {
+                    log.info("文件大小：" + size + " 字节");
                     return JsonData.buildError("文件大小不能超过10M");
                 }
                 //原图
                 String fileName = file.getOriginalFilename();
-                String suffixName = fileName.substring(fileName.lastIndexOf("."));
+                String suffixName = fileName.substring(fileName.lastIndexOf(".")); //截取图片后缀名
                 UUID uuid = UUID.randomUUID();
                 fileName = uuid + suffixName;
 

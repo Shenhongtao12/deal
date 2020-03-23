@@ -7,11 +7,13 @@ import com.sht.deal.Mapper.UserMapper;
 import com.sht.deal.domain.Buy;
 import com.sht.deal.domain.User;
 import com.sht.deal.exception.AllException;
-import com.sht.deal.service.UserService;
 import com.sht.deal.utils.DateUtils;
 import com.sht.deal.utils.JsonData;
 import com.sht.deal.utils.PageResult;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,8 +21,9 @@ import tk.mybatis.mapper.entity.Example;
 
 @Service
 @Transactional
-public class BuyService
-{
+public class BuyService {
+	private static final Logger log = LoggerFactory.getLogger(BuyService.class);
+
 	@Autowired
 	private BuyMapper buyMapper;
 	@Autowired
@@ -48,6 +51,7 @@ public class BuyService
 	}
 
 	public PageResult<Buy> findByPage(Integer userid, String buyName, int page, int rows) {
+		log.info("搜索名称：" + buyName);
 		Example example = new Example(Buy.class);
 		Example.Criteria criteria = example.createCriteria();
 		if (userid != null) {

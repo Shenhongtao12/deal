@@ -1,6 +1,5 @@
 package com.sht.deal.config;
 
-import com.sht.deal.config.UserRealm;
 import com.sht.deal.domain.Permission;
 import com.sht.deal.domain.Role;
 import com.sht.deal.domain.User;

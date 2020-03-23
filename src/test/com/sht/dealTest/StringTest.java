@@ -1,5 +1,6 @@
 package com.sht.dealTest;
 
+import com.github.pagehelper.PageInfo;
 import org.junit.Test;
 
 /**

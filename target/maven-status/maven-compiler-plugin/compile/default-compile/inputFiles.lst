@@ -40,6 +40,7 @@ D:\myProject\deal\src\main\java\com\sht\deal\Mapper\GoodsMapper.java
 D:\myProject\deal\src\main\java\com\sht\deal\DealApplication.java
 D:\myProject\deal\src\main\java\com\sht\deal\domain\Love.java
 D:\myProject\deal\src\main\java\com\sht\deal\Mapper\FansMapper.java
+D:\myProject\deal\src\main\java\com\sht\deal\utils\WebLogAspect.java
 D:\myProject\deal\src\main\java\com\sht\deal\service\Classify1Service.java
 D:\myProject\deal\src\main\java\com\sht\deal\utils\PageResult.java
 D:\myProject\deal\src\main\java\com\sht\deal\controller\ReplyController.java

@@ -18,8 +18,8 @@ spring:
       max-file-size: 10MB # 限制文件上传的大小
       enabled: true  #是否启用文件上传功能
   redis:
-    host: 172.17.240.99
-    #host: 47.93.240.205
+    #host: 172.17.240.99
+    host: 47.93.240.205
     port: 6379
     database: 0
     password: sht123
@@ -27,7 +27,8 @@ spring:
 #mybatis下划线转驼峰配置
 mybatis:
   configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  #打印sql语句
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  #打印sql语句包括查询结果
+    #log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl  #不打印查询结果
     map-underscore-to-camel-case: true
 #Email配置
 email:
@@ -39,4 +40,9 @@ email:
     mail: shenhongtao_12@163.com #发送方，必须为你设置的username一致
     name: 二手交易平台 #发送方显示的名称，可以随意设置
   charset: UTF-8 #编码格式，一般设置为UTF-8
-
+#日志信息
+logging:
+  level:
+    root: info #日志的级别
+  path: /myProject   #配置日志文件的路径
+  file: 二手交易平台运行日志.log  #配置日志文件名，如果该属性不配置，默认文件名为spring.log

@@ -3,6 +3,7 @@ com\sht\deal\controller\CommentController.class
 com\sht\deal\Mapper\RoleMapper.class
 com\sht\deal\service\UploadService.class
 com\sht\deal\domain\Comment.class
+com\sht\deal\utils\WebLogAspect.class
 com\sht\deal\Mapper\Classify2Mapper.class
 com\sht\deal\Mapper\Classify1Mapper.class
 com\sht\deal\service\Classify1Service.class
