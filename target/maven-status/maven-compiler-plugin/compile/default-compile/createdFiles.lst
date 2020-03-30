@@ -57,6 +57,7 @@ com\sht\deal\service\PermissionService.class
 com\sht\deal\service\UserService.class
 com\sht\deal\controller\UserController.class
 com\sht\deal\controller\Classify1Controller.class
+com\sht\deal\config\QQConfig.class
 com\sht\deal\utils\ImageTools.class
 com\sht\deal\domain\Middle.class
 com\sht\deal\utils\JwtUtils.class

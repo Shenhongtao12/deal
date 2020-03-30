@@ -15,6 +15,7 @@ D:\myProject\deal\src\main\java\com\sht\deal\controller\BuyController.java
 D:\myProject\deal\src\main\java\com\sht\deal\utils\EmailCodeUtils.java
 D:\myProject\deal\src\main\java\com\sht\deal\Mapper\CommentMapper.java
 D:\myProject\deal\src\main\java\com\sht\deal\interceoter\LoginIntercepter.java
+D:\myProject\deal\src\main\java\com\sht\deal\config\QQConfig.java
 D:\myProject\deal\src\main\java\com\sht\deal\service\BuyService.java
 D:\myProject\deal\src\main\java\com\sht\deal\controller\Classify1Controller.java
 D:\myProject\deal\src\main\java\com\sht\deal\utils\DateUtils.java

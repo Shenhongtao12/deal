@@ -3,6 +3,7 @@ package com.sht.deal.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sht.deal.Mapper.UserMapper;
+import com.sht.deal.config.QQConfig;
 import com.sht.deal.domain.Middle;
 import com.sht.deal.domain.Role;
 import com.sht.deal.domain.User;
@@ -70,6 +71,53 @@ public class UserService {
                 .getPhone().getBytes("UTF-8").length > 20) {
             throw new AllException(-1, "数据校验失败，请重新输入");
         }
+    }
+
+    //qq回调
+    public User saveQQUser(String code) {
+        System.out.println("---------------回调 " + code);
+        // 获取access token
+        String access_url = QQConfig.GETACCESSTOKEN+"?grant_type=authorization_code" +
+                "&client_id=" + QQConfig.APPID +
+                "&client_secret=" + QQConfig.APPKEY +
+                "&code=" + code +
+                "&redirect_uri=" + QQConfig.BACKURL;
+        /*String  access_res = HttpClientUtils.httpGet(access_url);
+        String access_token = "";
+        if (access_res.indexOf("access_token") >= 0) {
+            String[] array = access_res.split("&");
+            for (String str: array)
+                if (str.indexOf("access_token") >= 0) {
+                    access_token = str.substring(str.indexOf("=") + 1);
+                    break;
+                }
+        }*/
+
+        /*// 获取qq账户 openId
+        String open_id_url = QQConfigInfo.GETACCOUNTOPENID+"?access_token="+access_token;
+        String open_id_res = HttpClientUtils.httpGet(open_id_url);
+        int startIndex = open_id_res.indexOf("(");
+        int endIndex = open_id_res.lastIndexOf(")");
+        String open_id_res_str = open_id_res.substring(startIndex + 1, endIndex);
+        OpenId accountOpen = gson.fromJson(open_id_res_str,OpenId.class);
+
+        // 获取账户qq信息
+        String account_info_url = QQConfigInfo.GETACCOUNTINFO+"?access_token="+access_token+
+                "&oauth_consumer_key=" + QQConfigInfo.APPID +
+                "&openid=" + accountOpen.getOpenid();
+        String account_info_res = HttpClientUtils.httpGet(account_info_url);
+        QQAccountInfo accountInfo = gson.fromJson(account_info_res,QQAccountInfo.class);
+        accountInfo.setOpen_id(accountOpen.getOpenid());
+        // 判断openid在系统中是否存在
+        QQAccountInfo isExits = qqUserDao.getQQUserById(accountOpen.getOpenid());
+        if(isExits == null){
+            // 插入
+            qqUserDao.addQQUser(accountInfo);
+        }else {
+            // 更新
+            qqUserDao.updateQQUser(accountInfo);
+        }*/
+        return new User();
     }
 
     public User findById(int id) {

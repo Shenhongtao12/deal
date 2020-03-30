@@ -24,12 +24,14 @@ spring:
     database: 0
     password: sht123
     timeout: 5000
-#mybatis下划线转驼峰配置
+  jackson:
+    #default-property-inclusion: non_null  #配置json处理时忽略空值
+#mybatis
 mybatis:
   configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  #打印sql语句包括查询结果
-    #log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl  #不打印查询结果
-    map-underscore-to-camel-case: true
+    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  #打印sql语句包括查询结果
+    #log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl  #仅打印查询语句 需配置日志级别为debug级别
+    map-underscore-to-camel-case: true #下划线转驼峰配置
 #Email配置
 email:
   host-name: smtp.163.com  #服务地址，可以直接在web端登录，找到smtp服务看到，163邮箱默认开放25端口，可暂时不设置
@@ -46,3 +48,11 @@ logging:
     root: info #日志的级别
   path: /myProject   #配置日志文件的路径
   file: 二手交易平台运行日志.log  #配置日志文件名，如果该属性不配置，默认文件名为spring.log
+#配置分页插件pagehelper
+pagehelper:
+  helperDialect: mysql  #设置数据库
+  reasonable: true  #分页合理化参数pageNum<=0 时会查询第一页，pageNum>pages（超过总数时），会查询最后一页
+  page-size-zero: true  #pageSize=0 每页显示条数为0 就会查询出全部的结果（但是返回结果仍然是 Page 类型）
+  supportMethodsArguments: true
+  params: count=countSql
+
