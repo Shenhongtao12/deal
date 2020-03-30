@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sht.deal.Mapper.UserMapper;
 import com.sht.deal.config.QQConfig;
+import com.sht.deal.domain.Fans;
 import com.sht.deal.domain.Middle;
 import com.sht.deal.domain.Role;
 import com.sht.deal.domain.User;
@@ -130,6 +131,7 @@ public class UserService {
     }
 
     public Map registerAndLogin(String email, String code) {
+        Map map = new HashMap();
         String emailCode = (String) this.redisTemplate.boundValueOps(email).get();
         if (StringUtils.isEmpty(emailCode)) {
             throw new AllException(-1, "验证码错误或者已过期，请重新发送");
@@ -151,11 +153,12 @@ public class UserService {
             user.setId(user.getId());
         }
         Map result = new HashMap();
-        String token1 = JwtUtils.geneJsonWebToken(user);
-        result.put("code", 0);
-        result.put("token", token1);
-        result.put("data", user);
-        return result;
+        String token = JwtUtils.geneJsonWebToken(user);
+        result.put("token", token);
+        result.put("user", user);
+        map.put("code", 0);
+        map.put("data", result);
+        return map;
     }
 
     public JsonData saveAdmin(User user) {
@@ -199,8 +202,20 @@ public class UserService {
         return JsonData.buildSuccess(id, "注册成功");
     }
 
+    //获取关注数和粉丝数
+    public Map findFansAndAttention(Integer UserId){
+        Map fans = new HashMap();
+        //我关注的数量
+        int Num1 = fansService.countNum("fans", UserId);
+        //粉丝的数量
+        int Num2 = fansService.countNum("attention", UserId);
+        fans.put("fans", Num2);
+        fans.put("attention", Num1);
+        return fans;
+    }
 
     public Map login(User userParam) {
+        Map map = new HashMap();
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.orEqualTo("username", userParam.getUsername());
@@ -211,20 +226,15 @@ public class UserService {
             throw new AllException(-1, "用户名或密码错误");
         }
         //粉丝，关注数量
-        Map fans = new HashMap();
-        //我关注的数量
-        int Num1 = fansService.countNum("fans", user.getId());
-        //粉丝的数量
-        int Num2 = fansService.countNum("attention", user.getId());
-        fans.put("fans", Num2);
-        fans.put("attention", Num1);
+        Map fans = findFansAndAttention(user.getId());
         String token1 = JwtUtils.geneJsonWebToken(user);
         Map result = new HashMap();
-        result.put("code", 0);
         result.put("token", token1);
-        result.put("data", user);
+        result.put("user", user);
         result.put("fans",fans);
-        return result;
+        map.put("code", 0);
+        map.put("data", result);
+        return map;
     }
 
 
@@ -247,7 +257,10 @@ public class UserService {
         try {
             subject.login(token);
             String token1 = JwtUtils.geneJsonWebToken(user);
-            return JsonData.buildSuccess(token, token1);
+            Map map = new HashMap();
+            map.put("user", user);
+            map.put("token", token1);
+            return JsonData.buildSuccess(map, "登录成功");
         } catch (UnknownAccountException e) {
             return JsonData.buildError("用户名错误");
         } catch (IncorrectCredentialsException e) {
@@ -291,7 +304,11 @@ public class UserService {
         this.userMapper.updateByPrimaryKeySelective(user);
         user1.setUsername(user.getUsername());
         user1.setFlag("false");
-        return JsonData.buildSuccess(user1, "更新成功");
+        Map fans = findFansAndAttention(user.getId());
+        Map map = new HashMap();
+        map.put("user", user1);
+        map.put("fans", fans);
+        return JsonData.buildSuccess(map, "更新成功");
     }
 
     public JsonData updateImg(User user) {
@@ -306,7 +323,11 @@ public class UserService {
             }
             deleteImg(path);
         }
-        return JsonData.buildSuccess(findById(user.getId()), "更新成功");
+        Map fans = findFansAndAttention(user.getId());
+        Map map = new HashMap();
+        map.put("user", findById(user.getId()));
+        map.put("fans", fans);
+        return JsonData.buildSuccess(map, "更新成功");
     }
 
 
@@ -320,31 +341,39 @@ public class UserService {
         if (userList.size() > 0) {
             throw new AllException(-1, "邮箱已被绑定");
         }
+        Map fans = findFansAndAttention(user.getId());
+        Map map = new HashMap();
+        map.put("fans", fans);
         if (user.getImg() == null) {
             this.userMapper.updateByPrimaryKeySelective(user);
-            return JsonData.buildSuccess(findById(user.getId()), "更新成功");
+            map.put("user", findById(user.getId()));
+            return JsonData.buildSuccess(map, "更新成功");
         }
         User user1 = findById(user.getId());
         if (user.getImg().equals(user1.getImg())) {
             this.userMapper.updateByPrimaryKeySelective(user);
-            return JsonData.buildSuccess(findById(user.getId()), "更新成功");
+            map.put("user", findById(user.getId()));
+            return JsonData.buildSuccess(map, "更新成功");
         }
         String path = user1.getImg();
         if (path == null || path.length() == 0) {
             this.userMapper.updateByPrimaryKeySelective(user);
-            return JsonData.buildSuccess(findById(user.getId()), "更新成功");
+            map.put("user", findById(user.getId()));
+            return JsonData.buildSuccess(map, "更新成功");
         }
         this.userMapper.updateByPrimaryKeySelective(user);
 
         if (deleteImg(path)) {
-            return JsonData.buildSuccess(findById(user.getId()), "更新成功");
+            map.put("user", findById(user.getId()));
+            return JsonData.buildSuccess(map, "更新成功");
         }
-        return JsonData.buildSuccess(findById(user.getId()), "更新成功，旧图片删除失败");
+        map.put("user", findById(user.getId()));
+        return JsonData.buildSuccess(map, "更新成功");
     }
 
 
     public boolean deleteImg(String path) {
-        path = path.substring(25);
+        path = path.substring(24);
         String name2 = path.substring(0, path.indexOf("thumbnail"));
         String jpg = path.substring(path.lastIndexOf("."));
         name2 = name2 + jpg;
@@ -363,6 +392,7 @@ public class UserService {
     }
 
 
+    //发送邮箱验证码
     public JsonData sendRegisterEmailCode(String email, String flag) throws Exception {
         String REGISTER_SUBJECT = "Eurasia二手交易平台";
 
@@ -370,12 +400,16 @@ public class UserService {
             throw new AllException(-1, "邮箱格式错误");
         }
 
-        if (flag.equals("")) {
-            if (checkEmail(email) > 1) {
+        if ("注册".equals(flag)) { //注册
+            if (checkEmail(email) > 0) {
                 throw new AllException(-1, "邮箱已被注册");
             }
-        } else if (checkEmail(email) > 0) {
-            throw new AllException(-1, "邮箱已被注册");
+        } else {   //登录，修改密码
+            if (checkEmail(email) > 1){
+                throw new AllException(-1, "邮箱已被注册");
+            } else if(checkEmail(email) == 0){  //没有注册的用户去修改密码发送验证码时执行
+                throw new AllException(-1, "该邮箱还未注册");
+            }
         }
 
 
@@ -457,7 +491,7 @@ public class UserService {
         user.setPassword(simpleHash.toString());
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("username", user.getUsername());
+        criteria.andEqualTo("email", user.getEmail());
         user.setUsername(null);
         int i = this.userMapper.updateByExampleSelective(user, example);
         if (i == 0) {
@@ -466,6 +500,7 @@ public class UserService {
         return JsonData.buildSuccess("修改成功");
     }
 
+    //已弃用
     public String findEmailByName(String username) {
         String s = this.userMapper.findEmailByName(username);
         if (StringUtils.isEmpty(s)) {

@@ -26,9 +26,9 @@ public class Goods implements Serializable
 	private Integer classify2_id;
 	private Integer userid;
 	@Transient
-	private boolean code;
+	private boolean code;  //判断用户是否收藏该产品
 	@Transient
-	private Integer commentNum;
+	private Integer commentNum;  //留言条数
 	@Transient
 	private User user;
 	@Transient

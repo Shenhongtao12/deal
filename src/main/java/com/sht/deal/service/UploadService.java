@@ -58,7 +58,7 @@ public class UploadService {
                 //缩略图
                 String thumbnailName = uuid + "thumbnail" + suffixName;
 
-                String thumbnailUrl = "http://47.93.240.205:8800" + site + "/" + thumbnailName;
+                String thumbnailUrl = "http://eurasia.plus:8800" + site + "/" + thumbnailName;
 
                 if (size < 204800L) {
                     Thumbnails.of(new String[]{site + "/" + fileName}).scale(1.0D).toFile(site + "/" + thumbnailName);

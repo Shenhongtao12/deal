@@ -57,7 +57,7 @@ public class UserController {
                 "&redirect_uri=" + URLEncoder.encode(QQConfig.BACKURL) +
                 "&state=" + uuid;
         try {
-            System.out.println("11111111111 " + url);
+            System.out.println("----------------qq登录URL " + url);
             response.sendRedirect(url);
         } catch (IOException e) {
             throw new AllException(-1, "跳转失败，请重试");
@@ -70,7 +70,7 @@ public class UserController {
         response.setContentType("text/html;charset=utf-8");
         try {
             String url = new Oauth().getAuthorizeURL(request);
-            System.out.println("2222222222222 "+url);
+            System.out.println("----------------qq登录URL-------------- " + url);
             response.sendRedirect(url);
         } catch (Exception e) {
             e.printStackTrace();
@@ -181,7 +181,8 @@ public class UserController {
     }
 
 
-    @GetMapping({"findEmailByName"})
+    //已弃用
+    //@GetMapping({"findEmailByName"})
     public ResponseEntity findEmailByName(@RequestParam("username") String username) {
         return ResponseEntity.ok(this.userService.findEmailByName(username));
     }

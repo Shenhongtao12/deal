@@ -180,7 +180,7 @@ public class GoodsService {
         String resultInfo = null;
 
         //String path = "/deal/goods/" + url;
-        String path = url.substring(25); //去掉http://47.93.240.205:8800
+        String path = url.substring(24); //http://eurasia.plus:8800
 
         String name2 = path.substring(0, path.indexOf("thumbnail"));
         String jpg = url.substring(url.lastIndexOf("."));

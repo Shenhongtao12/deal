@@ -24,17 +24,19 @@ public class FansService {
     @Autowired
     private UserService userService;
 
+    //既可以收藏也可以取消收藏
     public JsonData save(Fans fans) {
         Fans fans1 = this.fansMapper.findOne(fans.getUserId(), fans.getFansId());
         if (fans1 != null) {
             this.fansMapper.deleteByPrimaryKey(fans1.getId());
+            return JsonData.buildSuccess("取消收藏成功");
         } else {
             int i = this.fansMapper.insertSelective(fans);
             if (i != 1) {
                 return JsonData.buildError("失败");
             }
         }
-        return JsonData.buildSuccess("成功");
+        return JsonData.buildSuccess("收藏成功");
     }
 
     public JsonData delete(Integer id) {
