@@ -121,6 +121,22 @@ public class UserService {
         return new User();
     }
 
+    //返回给前端
+    public JsonData findById2(int id) {
+        User user = this.userMapper.selectByPrimaryKey(id);
+        if (user == null) {
+            throw new AllException(-1, "没有此用户");
+        }
+        user.setPassword("******");
+        //关注与粉丝
+        Map result = findFansAndAttention(id);
+        Map map = new HashMap();
+        map.put("user", user);
+        map.put("fans", result);
+        return JsonData.buildSuccess(map, "成功");
+    }
+
+    //供其他方法调用
     public User findById(int id) {
         User user = this.userMapper.selectByPrimaryKey(id);
         if (user == null) {

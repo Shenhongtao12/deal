@@ -28,7 +28,7 @@ public class LikeService {
     }
 
 
-    @Scheduled(cron = "0/20 * * * * ?")
+    @Scheduled(cron = "0/10 * * * * ?")
     public void saveSql() {
         Set key = this.redisTemplate.boundHashOps("loveHash").keys();
         List value = this.redisTemplate.boundHashOps("loveHash").values();
@@ -49,9 +49,10 @@ public class LikeService {
                 criteria.andEqualTo("typeid", Integer.valueOf(num[1].trim())); //留言id
                 criteria.andEqualTo("userid", Integer.valueOf(num[2].trim())); //userid
                 List<Love> loveList = this.likeMapper.selectByExample(example);
-                if (value.get(i).equals("0")) {
-                    if (loveList.size() > 0) {
+                if (value.get(i).equals("0")) {  //取消点赞
+                    if (loveList.size() > 0) {   //并且数据库中存在记录的
                         this.likeMapper.deleteByExample(example);
+                        //点赞数量-1
                         if (num[0].trim().equals("reply")) {
                             this.likeMapper.like(Integer.valueOf(num[1].trim()), -1);
                         } else {
@@ -59,7 +60,7 @@ public class LikeService {
                         }
 
                     }
-                } else if (loveList.size() == 0) {
+                } else if (loveList.size() == 0) {  //点赞，并且数据库无记录的
                     Love like = new Love();
                     like.setType(num[0].trim());
                     like.setTypeid(Integer.valueOf(num[1].trim()));

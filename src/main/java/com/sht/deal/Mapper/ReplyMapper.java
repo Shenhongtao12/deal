@@ -29,12 +29,6 @@ public interface ReplyMapper extends Mapper<Reply> {
             @Result(property = "user", column = "userid", many = @Many(select = "com.sht.deal.Mapper.UserMapper.findById"))})
     List<Reply> findByComId(int id);
 
-    @Select({"select userid from comment where commentid = #{id}"})
-    int findUserIdByComId(int id);
-
-    @Select({"select commentid from comment where userid = #{id}"})
-    int findCommentId(Integer id);
-
     @Update({"update reply set leaf = 1 where id = #{id}"})
     void updateLeaf(Integer id);
 
@@ -63,4 +57,8 @@ public interface ReplyMapper extends Mapper<Reply> {
             @Result(property = "goodsid", column = "goodsid"),
             @Result(property = "user", column = "userid", many = @Many(select = "com.sht.deal.Mapper.UserMapper.findById"))})
     List<MessageUtils> findComment(Integer goodsid, Integer userId);
+
+    //查找nickname
+    @Select("select nickname from user where id = #{id}")
+    String findNickname(Integer id);
 }

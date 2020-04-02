@@ -108,8 +108,8 @@ public class UserController {
 
 
     @GetMapping({"findById"})
-    public User findById(Integer id) {
-        return this.userService.findById(id);
+    public ResponseEntity findById(Integer id) {
+        return ResponseEntity.ok(this.userService.findById2(id));
     }
 
     @PostMapping({"save"})

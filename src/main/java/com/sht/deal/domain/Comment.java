@@ -15,12 +15,12 @@ public class Comment {
 	private String createtime;
 	private String content;
 	private Integer number;
-	private Integer userid;
+	private Integer userid;  //留言的发布人id
 	private Integer goodsid;
-	private Integer leaf;
+	private Integer leaf;  //null 用来区分留言和回复
 
 	@Transient
-	private Object state;
+	private Object state;  //判断点赞
 	@Transient
 	private User user;
 	@Transient

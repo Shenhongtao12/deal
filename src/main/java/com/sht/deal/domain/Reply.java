@@ -16,16 +16,17 @@ public class Reply
 	private String createtime;
 	private String content;
 	private Integer number;
-	private Integer leaf;
-	private Integer userid;
-	private Integer goodsid;
+	private Integer leaf;   //等于0时就是一个树的末尾
+	private Integer userid;  //回复的发布人id
+	private Integer goodsid;  //商品的id
 	private Integer commentid;
-	private Integer nameid;
-	private String parentname;
+	private Integer nameid;  //给谁回复的人id 父id
 	private Integer parentid;
 
 	@Transient
-	private Object state;
+	private String parentname;//父name
+	@Transient
+	private Object state;  //判断点赞
 	@Transient
 	private User user;
 	@Transient

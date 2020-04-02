@@ -38,7 +38,7 @@ public class GoodsController {
 
 
     @GetMapping({"findByPage"})
-    public ResponseEntity<PageResult<Goods>> findByPage(@RequestParam(value = "id", defaultValue = "") Integer id,
+    public ResponseEntity<PageResult<Goods>> findByPage(@RequestParam(value = "id", defaultValue = "") Integer id, //二级分类id
                                                         @RequestParam(value = "classify1", defaultValue = "") Integer classify1,
                                                         @RequestParam(value = "orderBy", defaultValue = "") String orderBy,
                                                         @RequestParam(value = "userid", defaultValue = "") Integer userid,

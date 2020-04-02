@@ -1,6 +1,5 @@
 package com.sht.deal.controller;
 
-import com.sht.deal.controller.LikeController;
 import com.sht.deal.service.LikeService;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/token/like")
-public class LikeController
-{
+public class LikeController {
 	@PostMapping({"save"})
 	public ResponseEntity save(@RequestBody Map map) {
 		this.likeService.save(map.get("type"), map.get("state"));

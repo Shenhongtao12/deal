@@ -113,10 +113,14 @@ public class ReplyService {
     }
 
 
+    //树形结构的留言回复数据
     public List<Reply> getTreeReply(int id, int userid) {
         List<Reply> list = this.replyMapper.findByComId(id);
         for (Reply reply : list) {
+            //判断是否对回复点赞
             reply.setState(this.likeMapper.findLoveBy("reply", reply.getId(), userid));
+            //设置nickname
+            reply.setParentname(replyMapper.findNickname(reply.getNameid()));
         }
 
         connectReply(list);
