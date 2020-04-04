@@ -2,13 +2,10 @@ package com.sht.deal.controller;
 
 import com.sht.deal.domain.Goods;
 import com.sht.deal.service.GoodsService;
-import com.sht.deal.service.UploadService;
-import com.sht.deal.utils.JsonData;
 import com.sht.deal.utils.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
@@ -16,8 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class GoodsController {
     @Autowired
     private GoodsService goodsService;
-    @Autowired
-    private UploadService uploadService;
 
     @PostMapping({"add"})
     public ResponseEntity add(@RequestBody Goods goods) throws Exception {
@@ -55,16 +50,4 @@ public class GoodsController {
     }
 
 
-    //@PostMapping(value = "image")
-    @PostMapping(value = "/image", headers = "content-type=multipart/form-data")
-    public ResponseEntity uploadImage(@RequestParam(value = "file") MultipartFile[] file, @RequestParam(name = "site", defaultValue = "/deal/goods") String site) {
-        JsonData url = this.uploadService.upload(file, site);
-        return ResponseEntity.ok(url);
-    }
-
-
-    @PostMapping({"deleteFile"})
-    public ResponseEntity<String> delFile(@RequestParam(name = "url") String url) {
-        return ResponseEntity.ok(this.goodsService.deleteImage(url));
-    }
 }

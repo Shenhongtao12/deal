@@ -1,6 +1,6 @@
 package com.sht.dealTest;
 
-import com.github.pagehelper.PageInfo;
+import com.sht.deal.utils.JwtUtils;
 import org.junit.Test;
 
 /**
@@ -19,5 +19,12 @@ public class StringTest {
         String jpg = url.substring(url.lastIndexOf("."));
         String path2 = name2 + jpg;
         System.out.println("22222222222 " + path2);
+    }
+
+    @Test
+    public void tokenTest(){
+        String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaHREZWFsIiwiaWQiOjMsInVzZXJuYW1lIjoic2h0MTIzIiwiaW1nIjoiaHR0cDovLzM5LjEwNi4xODguMjI6ODgwMC9kZWFsL3VzZXIvNTJhYzJjMzktOTI4Mi00NjI2LWFiOWUtNGU0MmQ3Yjk0YWEzLnBuZyIsImlhdCI6MTU3NzE4ODk5NywiZXhwIjoxNTc3NjIwOTk3fQ.Aaw8j096fJ80vpo6r6gZ3E2liqzYy8sm_s_FDBW-BvQ";
+        Object o = JwtUtils.checkJWT(token);
+        System.out.println(o);
     }
 }

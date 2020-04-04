@@ -45,6 +45,9 @@ public class GoodsService {
     @Autowired
     private CollectService collectService;
 
+    @Autowired
+    private UploadService uploadService;
+
     public Map add(Goods goods) throws Exception {
         Map result = new HashMap();
         checkout(goods);
@@ -78,7 +81,6 @@ public class GoodsService {
 
     public Map update(Goods goods) throws Exception {
         Map result = new HashMap();
-
 
         goods.setCreate_time(DateUtils.dateByString());
         int i = this.goodsMapper.updateByPrimaryKeySelective(goods);
@@ -155,7 +157,7 @@ public class GoodsService {
         String array[] = goods.getImages().split(",");
         if(array.length > 0){
             for (String image : array) {
-                deleteImage(image);
+                uploadService.deleteImage(image);
             }
         }
         //删除回复
@@ -173,30 +175,6 @@ public class GoodsService {
             throw new AllException(-1, "删除商品失败");
         }
         return JsonData.buildSuccess("删除成功");
-    }
-
-
-    public String deleteImage(String url) {
-        String resultInfo = null;
-
-        //String path = "/deal/goods/" + url;
-        String path = url.substring(24); //http://eurasia.plus:8800
-
-        String name2 = path.substring(0, path.indexOf("thumbnail"));
-        String jpg = url.substring(url.lastIndexOf("."));
-        String path2 = name2 + jpg;
-        File file = new File(path);
-        File file2 = new File(path2);
-        if (file.exists()) {
-            if (file.delete() && file2.delete()) {
-                resultInfo = "删除成功";
-            } else {
-                resultInfo = "删除失败";
-            }
-        } else {
-            resultInfo = "文件不存在";
-        }
-        return resultInfo;
     }
 
 

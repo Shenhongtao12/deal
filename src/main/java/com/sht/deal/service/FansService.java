@@ -44,6 +44,7 @@ public class FansService {
         return JsonData.buildSuccess("取消成功");
     }
 
+    //userId：我的粉丝     fansId：我的关注
     public PageResult<Fans> findFansToUser(Integer userId, Integer fansId, Integer page, Integer rows) {
         PageHelper.startPage(page, rows);
         Example example = new Example(Fans.class);

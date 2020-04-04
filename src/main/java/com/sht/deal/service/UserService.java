@@ -64,6 +64,8 @@ public class UserService {
     private StringRedisTemplate redisTemplate;
     @Autowired
     private FansService fansService;
+    @Autowired
+    private UploadService uploadService;
 
     public void checkout(User user) throws Exception {
         if (user
@@ -130,7 +132,7 @@ public class UserService {
         user.setPassword("******");
         //关注与粉丝
         Map result = findFansAndAttention(id);
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<>();
         map.put("user", user);
         map.put("fans", result);
         return JsonData.buildSuccess(map, "成功");
@@ -146,8 +148,8 @@ public class UserService {
         return user;
     }
 
-    public Map registerAndLogin(String email, String code) {
-        Map map = new HashMap();
+    public Map<String, Object> registerAndLogin(String email, String code) {
+        Map<String, Object> map = new HashMap<>();
         String emailCode = (String) this.redisTemplate.boundValueOps(email).get();
         if (StringUtils.isEmpty(emailCode)) {
             throw new AllException(-1, "验证码错误或者已过期，请重新发送");
@@ -168,7 +170,7 @@ public class UserService {
             this.userMapper.insertSelective(user);
             user.setId(user.getId());
         }
-        Map result = new HashMap();
+        Map<String, Object> result = new HashMap<>();
         String token = JwtUtils.geneJsonWebToken(user);
         result.put("token", token);
         result.put("user", user);
@@ -219,8 +221,8 @@ public class UserService {
     }
 
     //获取关注数和粉丝数
-    public Map findFansAndAttention(Integer UserId){
-        Map fans = new HashMap();
+    public Map<String, Object> findFansAndAttention(Integer UserId){
+        Map<String, Object> fans = new HashMap<>();
         //我关注的数量
         int Num1 = fansService.countNum("fans", UserId);
         //粉丝的数量
@@ -230,8 +232,8 @@ public class UserService {
         return fans;
     }
 
-    public Map login(User userParam) {
-        Map map = new HashMap();
+    public Map<String, Object> login(User userParam) {
+        Map<String, Object> map = new HashMap<>();
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.orEqualTo("username", userParam.getUsername());
@@ -242,9 +244,9 @@ public class UserService {
             throw new AllException(-1, "用户名或密码错误");
         }
         //粉丝，关注数量
-        Map fans = findFansAndAttention(user.getId());
+        Map<String, Object> fans = findFansAndAttention(user.getId());
         String token1 = JwtUtils.geneJsonWebToken(user);
-        Map result = new HashMap();
+        Map<String, Object> result = new HashMap<>();
         result.put("token", token1);
         result.put("user", user);
         result.put("fans",fans);
@@ -273,7 +275,7 @@ public class UserService {
         try {
             subject.login(token);
             String token1 = JwtUtils.geneJsonWebToken(user);
-            Map map = new HashMap();
+            Map<String, Object> map = new HashMap<>();
             map.put("user", user);
             map.put("token", token1);
             return JsonData.buildSuccess(map, "登录成功");
@@ -321,7 +323,7 @@ public class UserService {
         user1.setUsername(user.getUsername());
         user1.setFlag("false");
         Map fans = findFansAndAttention(user.getId());
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<>();
         map.put("user", user1);
         map.put("fans", fans);
         return JsonData.buildSuccess(map, "更新成功");
@@ -337,10 +339,10 @@ public class UserService {
             if (i != 1) {
                 throw new AllException(-1, "更新失败");
             }
-            deleteImg(path);
+            uploadService.deleteImage(path);
         }
-        Map fans = findFansAndAttention(user.getId());
-        Map map = new HashMap();
+        Map<String, Object> fans = findFansAndAttention(user.getId());
+        Map<String, Object> map = new HashMap<>();
         map.put("user", findById(user.getId()));
         map.put("fans", fans);
         return JsonData.buildSuccess(map, "更新成功");
@@ -358,7 +360,7 @@ public class UserService {
             throw new AllException(-1, "邮箱已被绑定");
         }
         Map fans = findFansAndAttention(user.getId());
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<>();
         map.put("fans", fans);
         if (user.getImg() == null) {
             this.userMapper.updateByPrimaryKeySelective(user);
@@ -379,23 +381,9 @@ public class UserService {
         }
         this.userMapper.updateByPrimaryKeySelective(user);
 
-        if (deleteImg(path)) {
-            map.put("user", findById(user.getId()));
-            return JsonData.buildSuccess(map, "更新成功");
-        }
+        uploadService.deleteImage(path);
         map.put("user", findById(user.getId()));
         return JsonData.buildSuccess(map, "更新成功");
-    }
-
-
-    public boolean deleteImg(String path) {
-        path = path.substring(24);
-        String name2 = path.substring(0, path.indexOf("thumbnail"));
-        String jpg = path.substring(path.lastIndexOf("."));
-        name2 = name2 + jpg;
-        File file = new File(path);
-        File file2 = new File(name2);
-        return (file.delete() && file2.delete());
     }
 
 

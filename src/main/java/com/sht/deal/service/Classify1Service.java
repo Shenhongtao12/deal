@@ -24,7 +24,7 @@ public class Classify1Service {
     @Autowired
     private Classify2Service classify2Service;
     @Autowired
-    private GoodsService goodsService;
+    private UploadService uploadService;
 
     public int add(Classify1 classify1) {
         if (Objects.nonNull(isExist(classify1))) {
@@ -41,7 +41,7 @@ public class Classify1Service {
 
     public int delete(Integer id) {
         Classify1 classify1 = classify1Mapper.selectByPrimaryKey(id);
-        goodsService.deleteImage(classify1.getImage());
+        uploadService.deleteImage(classify1.getImage());
         return this.classify1Mapper.deleteByPrimaryKey(id);
     }
 
@@ -51,7 +51,7 @@ public class Classify1Service {
         }
         if (classify1.getImage() != null) {
             Classify1 classify = classify1Mapper.selectByPrimaryKey(classify1.getId());
-            this.goodsService.deleteImage(classify.getImage());
+            this.uploadService.deleteImage(classify.getImage());
             return this.classify1Mapper.updateByPrimaryKeySelective(classify1);
         }
         return this.classify1Mapper.updateByPrimaryKeySelective(classify1);

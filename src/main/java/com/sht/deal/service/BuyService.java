@@ -22,7 +22,6 @@ import tk.mybatis.mapper.entity.Example;
 @Service
 @Transactional
 public class BuyService {
-	private static final Logger log = LoggerFactory.getLogger(BuyService.class);
 
 	@Autowired
 	private BuyMapper buyMapper;
@@ -51,7 +50,6 @@ public class BuyService {
 	}
 
 	public PageResult<Buy> findByPage(Integer userid, String buyName, int page, int rows) {
-		log.info("搜索名称：" + buyName);
 		Example example = new Example(Buy.class);
 		Example.Criteria criteria = example.createCriteria();
 		if (userid != null) {
