@@ -392,7 +392,7 @@ public class UserService {
         if (s == null) {
             return 0;
         }
-        return Integer.valueOf(s);
+        return Integer.parseInt(s);
     }
 
 

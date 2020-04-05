@@ -27,6 +27,8 @@ public class BuyService {
 	private BuyMapper buyMapper;
 	@Autowired
 	private UserMapper userService;
+	@Autowired
+	private UploadService uploadService;
 
 	public void checkout(Buy buy) throws Exception {
 		if (buy.getTitle().getBytes("UTF-8").length > 50) {
@@ -70,6 +72,13 @@ public class BuyService {
 	}
 
 	public JsonData delete(int id) {
+		Buy buy = buyMapper.selectByPrimaryKey(id);
+		String[] array = buy.getImages().split(",");
+		if(array.length > 0){
+			for (String image : array) {
+				uploadService.deleteImage(image);
+			}
+		}
 		int i = this.buyMapper.deleteByPrimaryKey(id);
 		return JsonData.buildSuccess(i, "删除成功");
 	}

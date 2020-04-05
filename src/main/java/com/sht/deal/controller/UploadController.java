@@ -4,6 +4,7 @@ import com.sht.deal.exception.AllException;
 import com.sht.deal.service.UploadService;
 import com.sht.deal.utils.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +32,11 @@ public class UploadController {
     }
 
     @PostMapping({"deleteImage"})
-    public ResponseEntity<String> delFile(@RequestParam(name = "url") String url) {
-        return ResponseEntity.ok(this.uploadService.deleteImage(url));
+    public ResponseEntity delFile(@RequestParam(name = "url") String url) {
+        String msg = uploadService.deleteImage(url);
+        if ("删除成功".equals(msg)) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(JsonData.buildSuccess(msg));
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(JsonData.buildError(msg));
     }
 }

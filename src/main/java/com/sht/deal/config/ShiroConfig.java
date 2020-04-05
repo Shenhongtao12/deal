@@ -42,10 +42,10 @@ public class ShiroConfig {
 		filerMap.put("/api/classify2/*", "perms[classify:change]");
 
 
-		shiroFilterFactoryBean.setLoginUrl("请先登录管理员");
+		shiroFilterFactoryBean.setLoginUrl("/pleaseLogin");
 
 
-		shiroFilterFactoryBean.setUnauthorizedUrl("权限不足");
+		shiroFilterFactoryBean.setUnauthorizedUrl("/UnauthorizedUrl");
 
 
 		shiroFilterFactoryBean.setFilterChainDefinitionMap(filerMap);

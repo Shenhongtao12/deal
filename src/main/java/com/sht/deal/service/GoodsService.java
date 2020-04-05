@@ -154,7 +154,7 @@ public class GoodsService {
         if (goods == null){
             return JsonData.buildSuccess("已删除该商品");
         }
-        String array[] = goods.getImages().split(",");
+        String[] array = goods.getImages().split(",");
         if(array.length > 0){
             for (String image : array) {
                 uploadService.deleteImage(image);
