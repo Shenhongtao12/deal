@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.sht.deal.utils.JsonData;
 import com.sht.deal.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+@Slf4j
 public class LoginIntercepter implements HandlerInterceptor {
 
 	private static final Gson gson = new Gson();
@@ -29,10 +31,11 @@ public class LoginIntercepter implements HandlerInterceptor {
 			Claims claims = JwtUtils.checkJWT(token);
 			if (claims != null) {
 				Integer userId = (Integer) claims.get("id");
-				String name = (String) claims.get("name");
+				String username = (String) claims.get("username");
+				log.info("当前操作的用户：" + username);
 
 				request.setAttribute("user_id", userId);
-				request.setAttribute("name", name);
+				request.setAttribute("username", username);
 
 				return true;
 			}

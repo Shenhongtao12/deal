@@ -1,4 +1,5 @@
 package com.sht.deal.controller;
+import com.alibaba.fastjson.JSON;
 import com.qq.connect.oauth.Oauth;
 import com.sht.deal.config.QQConfig;
 import com.sht.deal.domain.Middle;
@@ -6,10 +7,13 @@ import com.sht.deal.domain.Role;
 import com.sht.deal.domain.User;
 import com.sht.deal.exception.AllException;
 import com.sht.deal.service.UserService;
+import com.sht.deal.utils.JsonData;
+import com.sht.deal.utils.JwtUtils;
 import com.sht.deal.utils.PageResult;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -17,6 +21,8 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,12 +32,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@RestController
+@Controller
 @RequestMapping({"api/user"})
 public class UserController {
 
@@ -57,7 +64,6 @@ public class UserController {
                 "&redirect_uri=" + URLEncoder.encode(QQConfig.BACKURL) +
                 "&state=" + uuid;
         try {
-            System.out.println("----------------qq登录URL " + url);
             response.sendRedirect(url);
         } catch (IOException e) {
             throw new AllException(-1, "跳转失败，请重试");
@@ -100,10 +106,20 @@ public class UserController {
             qqUser =  userService.saveQQUser(code);
         } catch (Exception e) {
             e.printStackTrace();
-            return "";
+            return null;
         }
-        modelMap.addAttribute("user_info",qqUser);
-        return "index";
+        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map2 = new HashMap<>();
+        map2.put("user", qqUser);
+        Map fans = userService.findFansAndAttention(qqUser.getId());
+        map2.put("fans", fans);
+        map2.put("token", JwtUtils.geneJsonWebToken(qqUser));
+        //modelMap.addAttribute("domain","used.eurasia.plus");
+
+        map.put("code", 0);
+        map.put("data", map2);
+        modelMap.addAttribute("user", JSON.toJSON(map));
+        return "qq";
     }
 
 

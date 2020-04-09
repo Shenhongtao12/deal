@@ -1,6 +1,9 @@
 package com.sht.dealTest;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.sht.deal.utils.JwtUtils;
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.junit.Test;
 
 /**
@@ -26,5 +29,18 @@ public class StringTest {
         String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaHREZWFsIiwiaWQiOjMsInVzZXJuYW1lIjoic2h0MTIzIiwiaW1nIjoiaHR0cDovLzM5LjEwNi4xODguMjI6ODgwMC9kZWFsL3VzZXIvNTJhYzJjMzktOTI4Mi00NjI2LWFiOWUtNGU0MmQ3Yjk0YWEzLnBuZyIsImlhdCI6MTU3NzE4ODk5NywiZXhwIjoxNTc3NjIwOTk3fQ.Aaw8j096fJ80vpo6r6gZ3E2liqzYy8sm_s_FDBW-BvQ";
         Object o = JwtUtils.checkJWT(token);
         System.out.println(o);
+    }
+
+    @Test
+    public void MD5Test(){
+        SimpleHash simpleHash = new SimpleHash("MD5", "sht666", "deal", 10);
+        System.out.println(simpleHash.toString());
+    }
+
+    @Test
+    public void JsonTest(){
+        String path = "http://47.93.240.205:8800/deal/user/684e7970-1614-484d-85d3-bb0e48d61831thumbnail.jpg";
+
+        System.out.println(path.contains("/deal/user"));
     }
 }

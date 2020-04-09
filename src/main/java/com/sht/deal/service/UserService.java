@@ -1,7 +1,10 @@
 package com.sht.deal.service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.google.gson.JsonObject;
 import com.sht.deal.Mapper.UserMapper;
 import com.sht.deal.config.QQConfig;
 import com.sht.deal.domain.Fans;
@@ -10,11 +13,7 @@ import com.sht.deal.domain.Role;
 import com.sht.deal.domain.User;
 import com.sht.deal.exception.AllException;
 import com.sht.deal.service.RoleService;
-import com.sht.deal.utils.DateUtils;
-import com.sht.deal.utils.EmailCodeUtils;
-import com.sht.deal.utils.JsonData;
-import com.sht.deal.utils.JwtUtils;
-import com.sht.deal.utils.PageResult;
+import com.sht.deal.utils.*;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -35,6 +34,9 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -78,14 +80,13 @@ public class UserService {
 
     //qq回调
     public User saveQQUser(String code) {
-        System.out.println("---------------回调 " + code);
-        // 获取access token
+        // 获取Access Token
         String access_url = QQConfig.GETACCESSTOKEN+"?grant_type=authorization_code" +
                 "&client_id=" + QQConfig.APPID +
                 "&client_secret=" + QQConfig.APPKEY +
                 "&code=" + code +
                 "&redirect_uri=" + QQConfig.BACKURL;
-        /*String  access_res = HttpClientUtils.httpGet(access_url);
+        String  access_res = HttpClientUtils.httpGet(access_url);
         String access_token = "";
         if (access_res.indexOf("access_token") >= 0) {
             String[] array = access_res.split("&");
@@ -94,36 +95,51 @@ public class UserService {
                     access_token = str.substring(str.indexOf("=") + 1);
                     break;
                 }
-        }*/
+        }
 
-        /*// 获取qq账户 openId
-        String open_id_url = QQConfigInfo.GETACCOUNTOPENID+"?access_token="+access_token;
+        // 获取qq账户 openId
+        String open_id_url = QQConfig.GETACCOUNTOPENID+"?access_token="+access_token;
         String open_id_res = HttpClientUtils.httpGet(open_id_url);
         int startIndex = open_id_res.indexOf("(");
         int endIndex = open_id_res.lastIndexOf(")");
         String open_id_res_str = open_id_res.substring(startIndex + 1, endIndex);
-        OpenId accountOpen = gson.fromJson(open_id_res_str,OpenId.class);
+        JSONObject jsonObject = JSON.parseObject(open_id_res_str);
+        String openId = jsonObject.getString("openid");
 
         // 获取账户qq信息
-        String account_info_url = QQConfigInfo.GETACCOUNTINFO+"?access_token="+access_token+
-                "&oauth_consumer_key=" + QQConfigInfo.APPID +
-                "&openid=" + accountOpen.getOpenid();
+        String account_info_url = QQConfig.GETACCOUNTINFO+"?access_token="+access_token+
+                "&oauth_consumer_key=" + QQConfig.APPID +
+                "&openid=" + openId;
         String account_info_res = HttpClientUtils.httpGet(account_info_url);
-        QQAccountInfo accountInfo = gson.fromJson(account_info_res,QQAccountInfo.class);
-        accountInfo.setOpen_id(accountOpen.getOpenid());
+        //System.out.println(account_info_res);
+        JSONObject userJson = JSON.parseObject(account_info_res);
+        User qqUser = new User();
+        qqUser.setOpenId(openId);
+        qqUser.setNickname(userJson.getString("nickname"));
+        qqUser.setSex(userJson.getString("gender"));
+        qqUser.setImg(userJson.getString("figureurl_qq_1"));
+
         // 判断openid在系统中是否存在
-        QQAccountInfo isExits = qqUserDao.getQQUserById(accountOpen.getOpenid());
+        Example example = new Example(User.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("openId", openId);
+        User isExits = userMapper.selectOneByExample(example);
+        int id;
         if(isExits == null){
             // 插入
-            qqUserDao.addQQUser(accountInfo);
+            userMapper.insertSelective(qqUser);
+            id = qqUser.getId();
         }else {
             // 更新
-            qqUserDao.updateQQUser(accountInfo);
-        }*/
-        return new User();
+            qqUser.setId(isExits.getId());
+            userMapper.updateByPrimaryKeySelective(qqUser);
+            id = isExits.getId();
+        }
+        return findById(id);
     }
 
-    //返回给前端
+
+    //返回给前端的用户信息
     public JsonData findById2(int id) {
         User user = this.userMapper.selectByPrimaryKey(id);
         if (user == null) {
@@ -138,7 +154,7 @@ public class UserService {
         return JsonData.buildSuccess(map, "成功");
     }
 
-    //供其他方法调用
+    //供其他方法调用的用户信息
     public User findById(int id) {
         User user = this.userMapper.selectByPrimaryKey(id);
         if (user == null) {
@@ -339,7 +355,9 @@ public class UserService {
             if (i != 1) {
                 throw new AllException(-1, "更新失败");
             }
-            uploadService.deleteImage(path);
+            if (path.contains("/deal/user")){
+                uploadService.deleteImage(path);
+            }
         }
         Map<String, Object> fans = findFansAndAttention(user.getId());
         Map<String, Object> map = new HashMap<>();
@@ -381,7 +399,9 @@ public class UserService {
         }
         this.userMapper.updateByPrimaryKeySelective(user);
 
-        uploadService.deleteImage(path);
+        if (path.contains("/deal/user")){
+            uploadService.deleteImage(path);
+        }
         map.put("user", findById(user.getId()));
         return JsonData.buildSuccess(map, "更新成功");
     }

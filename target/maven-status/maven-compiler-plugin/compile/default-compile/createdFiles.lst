@@ -3,7 +3,6 @@ com\sht\deal\controller\CommentController.class
 com\sht\deal\Mapper\RoleMapper.class
 com\sht\deal\service\UploadService.class
 com\sht\deal\domain\Comment.class
-com\sht\deal\utils\WebLogAspect.class
 com\sht\deal\Mapper\Classify2Mapper.class
 com\sht\deal\Mapper\Classify1Mapper.class
 com\sht\deal\service\Classify1Service.class
@@ -14,6 +13,7 @@ com\sht\deal\domain\Goods.class
 com\sht\deal\controller\FansController.class
 com\sht\deal\DealApplication.class
 com\sht\deal\Mapper\UserMapper.class
+com\sht\deal\utils\HttpClientUtils.class
 com\sht\deal\service\GoodsService.class
 com\sht\deal\utils\JsonData.class
 com\sht\deal\domain\Love.class
@@ -25,6 +25,7 @@ com\sht\deal\domain\Buy.class
 com\sht\deal\utils\PageResult.class
 com\sht\deal\service\BuyService.class
 com\sht\deal\interceoter\LoginIntercepter.class
+com\sht\deal\interceoter\WebLogAspect.class
 com\sht\deal\domain\Fans.class
 com\sht\deal\exception\AllExceptionHandler.class
 com\sht\deal\config\Cors.class

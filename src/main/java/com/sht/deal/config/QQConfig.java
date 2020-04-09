@@ -10,17 +10,17 @@ public class QQConfig {
     /**
      * 域名
      */
-    private static final String DOMAIN = "http://test.eurasia.plus:8800";
+    private static final String DOMAIN = "http://eurasia.plus:8800";
 
     /**
      * APPID
      */
-    public static final String APPID = "101865704";
+    public static final String APPID = "101868336";
 
     /**
      * APPKEY
      */
-    public static final String APPKEY = "efb666b220acd8c01ba337316aa16908";
+    public static final String APPKEY = "0c7410ff03f13f6769a1c8436d44abf1";
 
     /**
      * 回调地址

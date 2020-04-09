@@ -29,6 +29,7 @@ public class User
 	private String email;
 	private String password;
 	private String nickname;
+	private String openId;
 	private String intro;  //介绍
 	private String phone;
 	private String sex;

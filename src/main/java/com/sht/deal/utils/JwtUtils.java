@@ -10,7 +10,7 @@ import java.util.Date;
 public class JwtUtils {
 	private static final String SUBJECT = "shtDeal";
 	private static final long EXPIRE = 1000*60*60*24*7; //7天
-	private static final String APPSECRET = "sht666";
+	private static final String APPSECRET = "e61451278486b545f860defcae13c19f";//"MD5", "sht666", "deal", 10
 
 	public static String geneJsonWebToken(User user)
 	{
@@ -38,11 +38,12 @@ public class JwtUtils {
 
 	public static Claims checkJWT(String token){
 		try {
-			final Claims claims = Jwts.parser().setSigningKey(APPSECRET).parseClaimsJws(token).getBody();
-			return claims;
+			return Jwts.parser().setSigningKey(APPSECRET).parseClaimsJws(token).getBody();
+		}catch (ExpiredJwtException e){
+			log.info("身份信息已过期");
+			return null;
 		}catch (Exception e){
-			log.info("身份验证失败，异常信息为：" + e);
-			log.info("失败的token：" + token);
+			log.info("无效的身份信息");
 			return null;
 		}
 	}
