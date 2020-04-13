@@ -124,18 +124,13 @@ public class UserService {
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("openId", openId);
         User isExits = userMapper.selectOneByExample(example);
-        int id;
         if(isExits == null){
-            // 插入
+            // 第一次使用qq登录
             userMapper.insertSelective(qqUser);
-            id = qqUser.getId();
-        }else {
-            // 更新
-            qqUser.setId(isExits.getId());
-            userMapper.updateByPrimaryKeySelective(qqUser);
-            id = isExits.getId();
+            int id = qqUser.getId();
+            return findById(id);
         }
-        return findById(id);
+        return isExits;
     }
 
 
@@ -157,15 +152,11 @@ public class UserService {
     //供其他方法调用的用户信息
     public User findById(int id) {
         User user = this.userMapper.selectByPrimaryKey(id);
-        if (user == null) {
-            throw new AllException(-1, "没有此用户");
-        }
         user.setPassword("******");
         return user;
     }
 
-    public Map<String, Object> registerAndLogin(String email, String code) {
-        Map<String, Object> map = new HashMap<>();
+    public JsonData registerAndLogin(String email, String code) {
         String emailCode = (String) this.redisTemplate.boundValueOps(email).get();
         if (StringUtils.isEmpty(emailCode)) {
             throw new AllException(-1, "验证码错误或者已过期，请重新发送");
@@ -187,12 +178,10 @@ public class UserService {
             user.setId(user.getId());
         }
         Map<String, Object> result = new HashMap<>();
-        String token = JwtUtils.geneJsonWebToken(user);
-        result.put("token", token);
+        result.put("token", JwtUtils.geneJsonWebToken(user));
         result.put("user", user);
-        map.put("code", 0);
-        map.put("data", result);
-        return map;
+        result.put("fans", findFansAndAttention(user.getId()));
+        return JsonData.buildSuccess(result,"");
     }
 
     public JsonData saveAdmin(User user) {
@@ -260,12 +249,10 @@ public class UserService {
             throw new AllException(-1, "用户名或密码错误");
         }
         //粉丝，关注数量
-        Map<String, Object> fans = findFansAndAttention(user.getId());
-        String token1 = JwtUtils.geneJsonWebToken(user);
         Map<String, Object> result = new HashMap<>();
-        result.put("token", token1);
+        result.put("token", JwtUtils.geneJsonWebToken(user));
         result.put("user", user);
-        result.put("fans",fans);
+        result.put("fans",findFansAndAttention(user.getId()));
         map.put("code", 0);
         map.put("data", result);
         return map;
@@ -338,10 +325,10 @@ public class UserService {
         this.userMapper.updateByPrimaryKeySelective(user);
         user1.setUsername(user.getUsername());
         user1.setFlag("false");
-        Map fans = findFansAndAttention(user.getId());
         Map<String, Object> map = new HashMap<>();
         map.put("user", user1);
-        map.put("fans", fans);
+        map.put("fans", findFansAndAttention(user.getId()));
+        map.put("token", JwtUtils.geneJsonWebToken(user));
         return JsonData.buildSuccess(map, "更新成功");
     }
 
@@ -359,10 +346,10 @@ public class UserService {
                 uploadService.deleteImage(path);
             }
         }
-        Map<String, Object> fans = findFansAndAttention(user.getId());
         Map<String, Object> map = new HashMap<>();
         map.put("user", findById(user.getId()));
-        map.put("fans", fans);
+        map.put("fans", findFansAndAttention(user.getId()));
+        map.put("token", JwtUtils.geneJsonWebToken(user));
         return JsonData.buildSuccess(map, "更新成功");
     }
 
@@ -380,29 +367,16 @@ public class UserService {
         Map fans = findFansAndAttention(user.getId());
         Map<String, Object> map = new HashMap<>();
         map.put("fans", fans);
-        if (user.getImg() == null) {
-            this.userMapper.updateByPrimaryKeySelective(user);
-            map.put("user", findById(user.getId()));
-            return JsonData.buildSuccess(map, "更新成功");
-        }
-        User user1 = findById(user.getId());
-        if (user.getImg().equals(user1.getImg())) {
-            this.userMapper.updateByPrimaryKeySelective(user);
-            map.put("user", findById(user.getId()));
-            return JsonData.buildSuccess(map, "更新成功");
-        }
-        String path = user1.getImg();
-        if (path == null || path.length() == 0) {
-            this.userMapper.updateByPrimaryKeySelective(user);
-            map.put("user", findById(user.getId()));
-            return JsonData.buildSuccess(map, "更新成功");
+        if (user.getImg() != null) {
+            User user1 = findById(user.getId());
+            if (user1.getImg().contains("/deal/user")){
+                uploadService.deleteImage(user1.getImg());
+            }
         }
         this.userMapper.updateByPrimaryKeySelective(user);
-
-        if (path.contains("/deal/user")){
-            uploadService.deleteImage(path);
-        }
         map.put("user", findById(user.getId()));
+        map.put("token", JwtUtils.geneJsonWebToken(user));
+        map.put("fans", findFansAndAttention(user.getId()));
         return JsonData.buildSuccess(map, "更新成功");
     }
 
