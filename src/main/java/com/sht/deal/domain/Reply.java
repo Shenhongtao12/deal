@@ -17,7 +17,7 @@ public class Reply
 	private String content;
 	private Integer number;
 	private Integer leaf;   //等于0时就是一个树的末尾
-	private Integer userid;  //回复的发布人id
+	private Integer userid;  //发布回复的人id
 	private Integer goodsid;  //商品的id
 	private Integer commentid;
 	private Integer nameid;  //给谁回复的人id 父id

@@ -14,4 +14,10 @@ public interface LikeMapper extends Mapper<Love> {
 
 	@Select("select id from love where type = #{type} and typeid = #{typeid} and userid = #{userid}")
 	Object findLoveBy(String type, int typeid, int userid);
+
+	@Select("select userid from comment where commentid = #{typeid}")
+	int findUserIdByComment(int typeid);
+
+	@Select("select userid from reply where id = #{typeid}")
+	int findUserIdByReply(int typeid);
 }

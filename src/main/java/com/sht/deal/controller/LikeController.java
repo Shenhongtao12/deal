@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/token/like")
 public class LikeController {
 	@PostMapping({"save"})
-	public ResponseEntity save(@RequestBody Map map) {
+	public ResponseEntity save(@RequestBody Map map) { // "type":"reply:600:600","state":"1"
 		this.likeService.save(map.get("type"), map.get("state"));
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}

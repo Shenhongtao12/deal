@@ -23,6 +23,10 @@ public class LikeService {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
+    /**
+     * @param type  "reply:600:600"  留言或者回复:留言的id:用户id
+     * @param state "1"点赞 "0"取消点赞
+     */
     public void save(Object type, Object state) {
         this.redisTemplate.boundHashOps("loveHash").put(type, state);
     }
@@ -66,7 +70,19 @@ public class LikeService {
                     like.setTypeid(Integer.valueOf(num[1].trim()));
                     like.setUserid(Integer.valueOf(num[2].trim()));
                     like.setCreatetime(DateUtils.dateByString());
+                    int id;
+                    if ("comment".equals(num[0].trim())){
+                        id = likeMapper.findUserIdByComment(Integer.parseInt(num[1].trim()));
+                        like.setTypeUserId(id);
+                    }else {
+                        id = likeMapper.findUserIdByReply(Integer.parseInt(num[1].trim()));
+                        like.setTypeUserId(id);
+                    }
                     this.likeMapper.insert(like);
+                    //给被点赞的新消息数+1
+                    if (id != like.getUserid()){
+                        redisTemplate.boundValueOps(String.valueOf(id)).increment(1);
+                    }
                     if (num[0].trim().equals("reply")) {
                         this.likeMapper.like(Integer.valueOf(num[1].trim()), 1);
                     } else {

@@ -124,8 +124,11 @@ public class UserController {
 
 
     @GetMapping({"findById"})
-    public ResponseEntity findById(Integer id) {
-        return ResponseEntity.ok(this.userService.findById2(id));
+    public ResponseEntity findById(@RequestParam(name = "id") Integer id) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("user", userService.findById(id));
+        map.put("fans", userService.findFansAndAttention(id));
+        return ResponseEntity.ok(JsonData.buildSuccess(map,""));
     }
 
     @PostMapping({"save"})

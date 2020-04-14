@@ -6,12 +6,14 @@ import com.sht.deal.Mapper.FansMapper;
 import com.sht.deal.Mapper.UserMapper;
 import com.sht.deal.domain.Fans;
 import com.sht.deal.service.FansService;
+import com.sht.deal.utils.DateUtils;
 import com.sht.deal.utils.JsonData;
 import com.sht.deal.utils.PageResult;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -23,15 +25,22 @@ public class FansService {
     private FansMapper fansMapper;
     @Autowired
     private UserService userService;
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     //既可以收藏也可以取消收藏
     public JsonData save(Fans fans) {
         Fans fans1 = this.fansMapper.findOne(fans.getUserId(), fans.getFansId());
         if (fans1 != null) {
             this.fansMapper.deleteByPrimaryKey(fans1.getId());
+            if (redisTemplate.hasKey("fans-" + fans.getUserId()) && redisTemplate.opsForSet().isMember("fans-" + fans.getUserId(), String.valueOf(fans.getFansId()))){
+                redisTemplate.opsForSet().remove("fans-" + fans.getUserId(), String.valueOf(fans.getFansId()));
+            }
             return JsonData.buildSuccess("取消收藏成功");
         } else {
+            fans.setCreatetime(DateUtils.dateByString());
             int i = this.fansMapper.insertSelective(fans);
+            redisTemplate.opsForSet().add("fans-" + fans.getUserId(), String.valueOf(fans.getFansId()));
             if (i != 1) {
                 return JsonData.buildError("失败");
             }

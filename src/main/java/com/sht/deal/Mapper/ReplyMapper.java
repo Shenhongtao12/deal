@@ -1,5 +1,6 @@
 package com.sht.deal.Mapper;
 
+import com.sht.deal.domain.Love;
 import com.sht.deal.domain.Reply;
 import com.sht.deal.utils.MessageUtils;
 
@@ -61,4 +62,28 @@ public interface ReplyMapper extends Mapper<Reply> {
     //查找nickname
     @Select("select nickname from user where id = #{id}")
     String findNickname(Integer id);
+
+    @Select("select createtime, fans_id from fans where user_id = #{userId}")
+    @Results({
+            @Result(id = true, property = "id", column = "id"),
+            @Result(property = "createtime", column = "createtime"),
+            @Result(property = "userid", column = "fans_id"),
+            @Result(property = "user", column = "fans_id", many = @Many(select = "com.sht.deal.Mapper.UserMapper.findById"))})
+    List<MessageUtils> findFans(Integer userId);
+
+    @Select({"select type, typeid, createtime, userid from love where type_user_id = #{userId}"})
+    @Results({
+            @Result(id = true, property = "id", column = "id"),
+            @Result(property = "type", column = "type"),
+            @Result(property = "typeid", column = "typeid"),
+            @Result(property = "createtime", column = "createtime"),
+            @Result(property = "userid", column = "userid"),
+            @Result(property = "user", column = "userid", many = @Many(select = "com.sht.deal.Mapper.UserMapper.findById"))})
+    List<Love> findLove(Integer userId);
+
+    @Select("select content, goodsid from comment where commentid = #{typeid}")
+    MessageUtils findCommentContent(Integer typeid);
+
+    @Select("select content, goodsid from reply where id = #{typeid}")
+    MessageUtils findReplyContent(Integer typeid);
 }

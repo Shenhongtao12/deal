@@ -14,6 +14,7 @@ public class Love {
 	private Integer id;
 	private String type;
 	private Integer typeid;
+	private Integer typeUserId;
 	private Integer userid;
 	private String createtime;
 

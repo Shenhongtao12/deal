@@ -2,6 +2,7 @@ package com.sht.deal.service;
 
 import com.sht.deal.Mapper.LikeMapper;
 import com.sht.deal.Mapper.ReplyMapper;
+import com.sht.deal.domain.Love;
 import com.sht.deal.domain.Reply;
 import com.sht.deal.exception.AllException;
 import com.sht.deal.service.ReplyService;
@@ -79,6 +80,7 @@ public class ReplyService {
     }
 
 
+    //查看与我相关
     public JsonData findAllByUser(Integer userId) {
         List<MessageUtils> list = this.replyMapper.findReply(userId);
         for (MessageUtils messageUtils : list) {
@@ -88,7 +90,8 @@ public class ReplyService {
             messageUtils.setName(goods.getName());
         }
 
-        List<MessageUtils> commentList = new ArrayList<MessageUtils>();
+        //将留言装进集合
+        List<MessageUtils> commentList = new ArrayList<>();
         int[] ids = this.replyMapper.findGoodsId(userId);
         for (int i = 0; i < ids.length; i++) {
             int id = ids[i];
@@ -103,11 +106,39 @@ public class ReplyService {
         if (commentList.size() > 0) {
             list.addAll(commentList);
         }
+        //将关注装进集合
+        List<MessageUtils> fansList = replyMapper.findFans(userId);
+        if (fansList.size() > 0){
+            list.addAll(fansList);
+        }
+        //将点赞信息装进集合
+        List<MessageUtils> loveMList = new ArrayList<>();
+        List<Love> loveList = replyMapper.findLove(userId);
+        for (Love love : loveList) {
+            MessageUtils type = new MessageUtils();
+            if ("comment".equals(love.getType())){
+                type = replyMapper.findCommentContent(love.getTypeid());
+            }else if("reply".equals(love.getType())){
+                type = replyMapper.findReplyContent(love.getTypeid());
+            }
+            type.setUserid(love.getUserid());
+            type.setUser(love.getUser());
+            type.setCreatetime(love.getCreatetime());
+            MessageUtils goods = this.replyMapper.findGoods(type.getGoodsid());
+            String[] images = goods.getImages().split(",");
+            type.setImages(images[0]);
+            loveMList.add(type);
+        }
+        if (loveMList.size() > 0){
+            list.addAll(loveMList);
+        }
+        //返回总数据
         if (list.size() == 0) {
             return JsonData.buildSuccess("无数据");
         }else {
             Collections.sort(list);
             redisTemplate.delete(String.valueOf(userId));
+            redisTemplate.delete("fans-" + userId);
             return JsonData.buildSuccess(list, "");
         }
     }

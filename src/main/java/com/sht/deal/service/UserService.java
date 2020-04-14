@@ -134,24 +134,12 @@ public class UserService {
     }
 
 
-    //返回给前端的用户信息
-    public JsonData findById2(int id) {
+    //根据id查用户
+    public User findById(int id) {
         User user = this.userMapper.selectByPrimaryKey(id);
         if (user == null) {
             throw new AllException(-1, "没有此用户");
         }
-        user.setPassword("******");
-        //关注与粉丝
-        Map result = findFansAndAttention(id);
-        Map<String, Object> map = new HashMap<>();
-        map.put("user", user);
-        map.put("fans", result);
-        return JsonData.buildSuccess(map, "成功");
-    }
-
-    //供其他方法调用的用户信息
-    public User findById(int id) {
-        User user = this.userMapper.selectByPrimaryKey(id);
         user.setPassword("******");
         return user;
     }
@@ -382,11 +370,14 @@ public class UserService {
 
 
     public int messageGet(int id) {
-        String s = redisTemplate.boundValueOps(String.valueOf(id)).get();
-        if (s == null) {
-            return 0;
+        //获取回复数量
+        String reply = redisTemplate.boundValueOps(String.valueOf(id)).get();
+        //获取关注的数量
+        Long fans = redisTemplate.opsForSet().size("fans-" + id);
+        if (reply == null) {
+            return fans.intValue();
         }
-        return Integer.parseInt(s);
+        return Integer.parseInt(reply) + fans.intValue();
     }
 
 

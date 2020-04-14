@@ -2,6 +2,7 @@ package com.sht.dealTest;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.sht.deal.domain.User;
 import com.sht.deal.utils.JwtUtils;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.junit.Test;
@@ -26,8 +27,14 @@ public class StringTest {
 
     @Test
     public void tokenTest(){
-        String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaHREZWFsIiwiaWQiOjMsInVzZXJuYW1lIjoic2h0MTIzIiwiaW1nIjoiaHR0cDovLzM5LjEwNi4xODguMjI6ODgwMC9kZWFsL3VzZXIvNTJhYzJjMzktOTI4Mi00NjI2LWFiOWUtNGU0MmQ3Yjk0YWEzLnBuZyIsImlhdCI6MTU3NzE4ODk5NywiZXhwIjoxNTc3NjIwOTk3fQ.Aaw8j096fJ80vpo6r6gZ3E2liqzYy8sm_s_FDBW-BvQ";
+        /*String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaHREZWFsIiwiaWQiOjMsInVzZXJuYW1lIjoic2h0MTIzIiwiaW1nIjoiaHR0cDovLzM5LjEwNi4xODguMjI6ODgwMC9kZWFsL3VzZXIvNTJhYzJjMzktOTI4Mi00NjI2LWFiOWUtNGU0MmQ3Yjk0YWEzLnBuZyIsImlhdCI6MTU3NzE4ODk5NywiZXhwIjoxNTc3NjIwOTk3fQ.Aaw8j096fJ80vpo6r6gZ3E2liqzYy8sm_s_FDBW-BvQ";
+        Object o = JwtUtils.checkJWT(token);*/
+        User user = new User();
+        user.setId(1);
+        user.setImg("/sjgh/aga");
+        String token = JwtUtils.geneJsonWebToken(user);
         Object o = JwtUtils.checkJWT(token);
+        System.out.println(token);
         System.out.println(o);
     }
 
