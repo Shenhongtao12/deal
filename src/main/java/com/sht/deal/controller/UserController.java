@@ -226,13 +226,18 @@ public class UserController {
 
 
     @GetMapping({"findRoleById"})
-    public ResponseEntity<User> findRoleById(@RequestParam(name = "id") Integer id) {
+    public ResponseEntity findRoleById(@RequestParam(value = "id",name = "id") Integer id) {
         return ResponseEntity.ok(this.userService.findRoleById(id));
     }
-
 
     @DeleteMapping({"delete"})
     public ResponseEntity delete(@RequestParam(name = "ids") Integer[] ids) {
         return ResponseEntity.ok(this.userService.delete(ids));
+    }
+
+    //shiro权限控制
+    @GetMapping("authorError")
+    public ResponseEntity authError(Integer code){
+        return ResponseEntity.ok(new JsonData(-1,null, code == 1 ? "请登录" : "授权不足"));
     }
 }

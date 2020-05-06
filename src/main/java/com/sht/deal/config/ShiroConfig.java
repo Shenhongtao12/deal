@@ -17,6 +17,7 @@ public class ShiroConfig {
 	@Bean
 	public ShiroFilterFactoryBean getShiroFilterFactoryBean(@Qualifier("securityManager") DefaultWebSecurityManager securityManager) {
 		ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+		//设置安全管理器
 		shiroFilterFactoryBean.setSecurityManager(securityManager);
 		Map<String, String> filerMap = new LinkedHashMap<String, String>();
 		//开放的接口
@@ -29,6 +30,7 @@ public class ShiroConfig {
 		filerMap.put("/api/user/loginAdmin", "anon");
 
 		//需要权限的接口
+		//filerMap.put("/api/user/*","roles[超级管理员]");
 		filerMap.put("/api/user/saveAdmin", "perms[user:add]");
 		filerMap.put("/api/user/delete", "perms[user:delete]");
 		filerMap.put("/api/user/addRoleToUser", "perms[user:role]");
@@ -42,10 +44,10 @@ public class ShiroConfig {
 		filerMap.put("/api/classify2/*", "perms[classify:change]");
 
 
-		shiroFilterFactoryBean.setLoginUrl("/pleaseLogin");
+		shiroFilterFactoryBean.setLoginUrl("/api/user/authorError?code=1");
 
 
-		shiroFilterFactoryBean.setUnauthorizedUrl("/UnauthorizedUrl");
+		shiroFilterFactoryBean.setUnauthorizedUrl("/api/user/authorError?code=2");
 
 
 		shiroFilterFactoryBean.setFilterChainDefinitionMap(filerMap);

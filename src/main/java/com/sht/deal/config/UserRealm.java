@@ -22,6 +22,7 @@ public class UserRealm extends AuthorizingRealm {
     @Autowired
     private UserService userService;
 
+    //授权
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 
@@ -42,6 +43,7 @@ public class UserRealm extends AuthorizingRealm {
         return info;
     }
 
+    //认证
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
         User user = this.userService.findByUsername(token.getUsername());
