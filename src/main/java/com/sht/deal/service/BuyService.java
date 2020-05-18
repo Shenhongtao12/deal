@@ -12,13 +12,15 @@ import com.sht.deal.utils.JsonData;
 import com.sht.deal.utils.PageResult;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
+/**
+ * 求购----用户希望购买的
+ */
 @Service
 @Transactional
 public class BuyService {
