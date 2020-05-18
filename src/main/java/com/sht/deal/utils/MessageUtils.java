@@ -17,7 +17,7 @@ public class MessageUtils implements Comparable<MessageUtils> {
 	public int compareTo(MessageUtils o) {
 		if (getCreatetime().compareTo(o.getCreatetime()) > 0)
 			return -1;
-		if (getCreatetime().compareTo(o.getCreatetime()) == 0) {
+		else if (getCreatetime().compareTo(o.getCreatetime()) == 0) {
 			return 0;
 		}
 		return 1;
