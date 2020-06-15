@@ -31,4 +31,7 @@ public interface RoleMapper extends Mapper<Role> {
 
 	@Delete({"delete from user_role where role_id = #{roleId}"})
 	void deleteRoleUser(int roleId);
+
+	@Delete("DELETE FROM `role_permission` WHERE `role_id` = #{roleId} and permission_id = #{perId}")
+    int deletePermissionToRole(Integer roleId, Integer perId);
 }

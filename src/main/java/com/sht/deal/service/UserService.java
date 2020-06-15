@@ -250,11 +250,9 @@ public class UserService {
     public JsonData loginAdmin(User userParam) {
         User user = findByUsername(userParam.getUsername());
 
-
-        if (!"管".equals(user.getSex())) {
+        if (user != null && !"管".equals(user.getSex())) {
             throw new AllException(-1, "非管理员身份，登录失败");
         }
-
 
         Subject subject = SecurityUtils.getSubject();
 
@@ -526,5 +524,14 @@ public class UserService {
 
     public List<Role> findOtherRoles(Integer userId) {
         return this.userMapper.findOtherRoles(userId);
+    }
+
+    public JsonData deleteRoleToUser(Integer userId, Integer roleId) {
+        int i = userMapper.deleteRoleToUser(userId, roleId);
+        if (i == 1){
+            return JsonData.buildSuccess("成功");
+        }else {
+            return JsonData.buildError("失败");
+        }
     }
 }

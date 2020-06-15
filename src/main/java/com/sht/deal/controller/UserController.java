@@ -12,6 +12,7 @@ import com.sht.deal.utils.JwtUtils;
 import com.sht.deal.utils.PageResult;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
@@ -233,6 +234,12 @@ public class UserController {
     @DeleteMapping({"delete"})
     public ResponseEntity delete(@RequestParam(name = "ids") Integer[] ids) {
         return ResponseEntity.ok(this.userService.delete(ids));
+    }
+
+    @DeleteMapping("deleteRoleToUser")
+    public ResponseEntity<JsonData> deleteRoleToUser(@RequestParam(name = "userId") Integer userId,
+                                                     @RequestParam(name = "roleId") Integer roleId){
+        return ResponseEntity.status(200).body(userService.deleteRoleToUser(userId, roleId));
     }
 
     //shiro权限控制

@@ -59,4 +59,10 @@ public class RoleController {
     public ResponseEntity delete(@RequestParam(name = "roleIds") Integer[] roleIds) {
         return ResponseEntity.ok(this.roleService.delete(roleIds));
     }
+
+    @DeleteMapping({"deletePermissionToRole"})
+    public ResponseEntity deletePermissionToRole(@RequestParam(name = "roleId") Integer roleId,
+    @RequestParam(name = "perId") Integer perId){
+        return ResponseEntity.ok(this.roleService.deletePermissionToRole(roleId, perId));
+    }
 }

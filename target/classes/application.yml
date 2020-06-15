@@ -1,13 +1,9 @@
 #修改端口号
 server:
   port: 8800
-#  port: 443
-#  ssl:
-#    key-store: 3831113_eurasia.plus.pfx
-#    key-store-password: fdfvPR4Q
 #配置数据库
 database:
-  url: jdbc:mysql://47.93.240.205:3306/deal?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true
+  url: jdbc:mysql://172.17.240.99:3306/deal?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true
   #url: jdbc:mysql://47.93.240.205:3306/deal?useUnicode=true&characterEncoding=utf-8&useSSL=false
   username: root
   password: kindy0916
@@ -24,8 +20,8 @@ spring:
       max-file-size: 10MB # 限制文件上传的大小
       enabled: true  #是否启用文件上传功能
   redis:
-    #host: 172.17.240.99
-    host: 47.93.240.205
+    host: 172.17.240.99
+    #host: 47.93.240.205
     port: 6379
     database: 0
     password: sht123

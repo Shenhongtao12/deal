@@ -38,4 +38,7 @@ public interface UserMapper extends Mapper<User> {
 
     @Delete("DELETE FROM `user_role` WHERE `user_id` = #{id}")
     void deleteRole(int id);
+
+    @Delete("DELETE FROM `user_role` WHERE `user_id` = #{userId} and role_id = #{roleId}")
+    int deleteRoleToUser(Integer userId, Integer roleId);
 }
