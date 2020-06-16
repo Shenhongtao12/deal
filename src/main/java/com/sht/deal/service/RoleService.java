@@ -74,8 +74,11 @@ public class RoleService {
         return JsonData.buildSuccess("删除成功");
     }
 
-    public JsonData deletePermissionToRole(Integer roleId, Integer perId) {
-        int i = roleMapper.deletePermissionToRole(roleId, perId);
+    public JsonData deletePermissionToRole(Integer roleId, String permissionIds) {
+        String strings[] = permissionIds.split(",");
+        for (String perId : strings) {
+            roleMapper.deletePermissionToRole(roleId, Integer.parseInt(perId));
+        }
         return JsonData.buildSuccess("成功");
     }
 }

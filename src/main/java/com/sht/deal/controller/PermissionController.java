@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+//1.解决跨域
+@CrossOrigin
 @RestController
 @RequestMapping({"api/token/permission"})
 public class PermissionController {

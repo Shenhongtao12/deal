@@ -4,13 +4,10 @@ import com.sht.deal.domain.Classify2;
 import com.sht.deal.service.Classify2Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+//1.解决跨域
+@CrossOrigin
 @RestController
 @RequestMapping({"api/classify2"})
 public class Classify2Controller {

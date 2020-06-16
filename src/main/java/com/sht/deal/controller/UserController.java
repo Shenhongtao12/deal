@@ -25,20 +25,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+//1.解决跨域
+@CrossOrigin
 @Controller
 @RequestMapping({"api/user"})
 public class UserController {
@@ -238,13 +233,13 @@ public class UserController {
 
     @DeleteMapping("deleteRoleToUser")
     public ResponseEntity<JsonData> deleteRoleToUser(@RequestParam(name = "userId") Integer userId,
-                                                     @RequestParam(name = "roleId") Integer roleId){
-        return ResponseEntity.status(200).body(userService.deleteRoleToUser(userId, roleId));
+                                                     @RequestParam(name = "roleId") String roleIds){
+        return ResponseEntity.status(200).body(userService.deleteRoleToUser(userId, roleIds));
     }
 
     //shiro权限控制
     @GetMapping("authorError")
-    public ResponseEntity authError(Integer code){
-        return ResponseEntity.ok(new JsonData(-1,null, code == 1 ? "请登录" : "授权不足"));
+    public ResponseEntity authError(@RequestParam(name = "code") Integer code){
+        return ResponseEntity.status(401).body(new JsonData(-1,null, code == 1 ? "请登录" : "授权不足"));
     }
 }

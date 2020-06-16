@@ -291,11 +291,16 @@ public class UserService {
 
 
     public JsonData delete(Integer[] ids) {
-        for (Integer id : ids) {
-            userMapper.deleteRole(id);
-            userMapper.deleteByPrimaryKey(id);
+        try {
+            for (Integer id : ids) {
+                userMapper.deleteRole(id);
+                userMapper.deleteByPrimaryKey(id);
+            }
+            return JsonData.buildSuccess("删除成功");
+        }catch (Exception e){
+            return JsonData.buildError("删除失败，该用户不可删除");
         }
-        return JsonData.buildSuccess("删除成功");
+
     }
 
 
@@ -526,12 +531,11 @@ public class UserService {
         return this.userMapper.findOtherRoles(userId);
     }
 
-    public JsonData deleteRoleToUser(Integer userId, Integer roleId) {
-        int i = userMapper.deleteRoleToUser(userId, roleId);
-        if (i == 1){
-            return JsonData.buildSuccess("成功");
-        }else {
-            return JsonData.buildError("失败");
+    public JsonData deleteRoleToUser(Integer userId, String roleIds) {
+        String strings[] = roleIds.split(",");
+        for (String roleId : strings) {
+            userMapper.deleteRoleToUser(userId, Integer.parseInt(roleId));
         }
+        return JsonData.buildSuccess("成功");
     }
 }

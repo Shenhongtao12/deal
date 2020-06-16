@@ -28,6 +28,7 @@ public class ShiroConfig {
 		filerMap.put("/api/goods/findByLike", "anon");
 		filerMap.put("/api/classify1/findAll", "anon");
 		filerMap.put("/api/user/loginAdmin", "anon");
+		filerMap.put("/api/user/authorError","anon");
 
 		//需要权限的接口
 		//filerMap.put("/api/user/*","roles[超级管理员]");
