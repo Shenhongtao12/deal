@@ -518,6 +518,9 @@ public class UserService {
 
 
     public JsonData addRoleToUser(Middle middle) {
+        if (middle.getUserId() == 5){
+            return JsonData.buildError("您无权操作该管理员");
+        }
         String strings[] = middle.getRoleIds().split(",");
         for (String string : strings) {
             userMapper.addRoleToUser(middle.getUserId(), Integer.valueOf(string));
@@ -532,6 +535,9 @@ public class UserService {
     }
 
     public JsonData deleteRoleToUser(Integer userId, String roleIds) {
+        if (userId == 5){
+            return JsonData.buildError("您无权操作该管理员");
+        }
         String strings[] = roleIds.split(",");
         for (String roleId : strings) {
             userMapper.deleteRoleToUser(userId, Integer.parseInt(roleId));

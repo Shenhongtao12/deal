@@ -85,25 +85,26 @@ public class UploadService {
 
     //删除图片,传入完整的url  http://eurasia.plus:8800/deal/buy/1f33f675-edd6-4277-8daf-4c4f6f3470cethumbnail.png
     public String deleteImage(String url) {
-        String resultInfo;
+        String resultInfo = "此url非平台创建";
+        if (url != null && url.contains("eurasia.plus:8800")){
+            String path = url.substring(24); //截掉http://eurasia.plus:8800
 
-        String path = url.substring(24); //截掉http://eurasia.plus:8800
-
-        String name2 = path.substring(0, path.indexOf("thumbnail"));
-        String jpg = url.substring(url.lastIndexOf("."));
-        String path2 = name2 + jpg;
-        File file = new File(path);
-        File file2 = new File(path2);
-        if (file.exists()) {
-            if (file.delete() && file2.delete()) {
-                resultInfo = "删除成功";
+            String name2 = path.substring(0, path.indexOf("thumbnail"));
+            String jpg = url.substring(url.lastIndexOf("."));
+            String path2 = name2 + jpg;
+            File file = new File(path);
+            File file2 = new File(path2);
+            if (file.exists()) {
+                if (file.delete() && file2.delete()) {
+                    resultInfo = "删除成功";
+                } else {
+                    resultInfo = "删除失败";
+                    log.error("图片删除失败：" + path2);
+                }
             } else {
-                resultInfo = "删除失败";
-                log.error("图片删除失败：" + path2);
+                resultInfo = "文件不存在";
+                log.error("图片不存在："  + path);
             }
-        } else {
-            resultInfo = "文件不存在";
-            log.error("图片不存在："  + path);
         }
         return resultInfo;
     }

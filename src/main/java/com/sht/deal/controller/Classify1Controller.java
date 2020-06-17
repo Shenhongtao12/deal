@@ -30,12 +30,12 @@ public class Classify1Controller {
     }
 
     @GetMapping("findById")
-    public ResponseEntity<Classify1> findById(Integer id) {
+    public ResponseEntity<Classify1> findById(@RequestParam(name = "id") Integer id) {
         return ResponseEntity.ok(this.classify1Service.findById(id));
     }
 
     @GetMapping("delete")
-    public ResponseEntity delete(Integer id) {
+    public ResponseEntity delete(@RequestParam(name = "id") Integer id) {
         return ResponseEntity.ok(this.classify1Service.delete(id));
     }
 
@@ -45,7 +45,7 @@ public class Classify1Controller {
     }
 
     @GetMapping("findChildById")
-    public ResponseEntity<List<Classify2>> findChildById(Integer id) throws Exception {
+    public ResponseEntity<List<Classify2>> findChildById(@RequestParam(name = "id") Integer id) {
         return ResponseEntity.ok(this.classify1Service.findChildById(id));
     }
 

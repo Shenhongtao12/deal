@@ -21,7 +21,7 @@ public class Classify2Controller {
     }
 
     @GetMapping({"delete"})
-    public ResponseEntity delete(Integer id) {
+    public ResponseEntity delete(@RequestParam(name = "id") Integer id) {
         return ResponseEntity.ok(this.classify2Service.delete(id));
     }
 

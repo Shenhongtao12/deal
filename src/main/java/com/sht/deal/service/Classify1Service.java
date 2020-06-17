@@ -10,6 +10,7 @@ import com.sht.deal.service.GoodsService;
 import java.util.List;
 import java.util.Objects;
 
+import com.sht.deal.utils.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +18,6 @@ import tk.mybatis.mapper.entity.Example;
 
 
 @Service
-@Transactional
 public class Classify1Service {
     @Autowired
     private Classify1Mapper classify1Mapper;
@@ -26,11 +26,15 @@ public class Classify1Service {
     @Autowired
     private UploadService uploadService;
 
-    public int add(Classify1 classify1) {
+    public JsonData add(Classify1 classify1) {
         if (Objects.nonNull(isExist(classify1))) {
             throw new AllException(-1, String.valueOf(isExist(classify1)));
         }
-        return this.classify1Mapper.insertSelective(classify1);
+        int i = this.classify1Mapper.insertSelective(classify1);
+        if (i != 1){
+            return JsonData.buildError("失败");
+        }
+        return JsonData.buildSuccess("成功");
     }
 
 
@@ -39,22 +43,29 @@ public class Classify1Service {
     }
 
 
-    public int delete(Integer id) {
+    public JsonData delete(Integer id) {
         Classify1 classify1 = classify1Mapper.selectByPrimaryKey(id);
-        uploadService.deleteImage(classify1.getImage());
-        return this.classify1Mapper.deleteByPrimaryKey(id);
+        try {
+            this.classify1Mapper.deleteByPrimaryKey(id);
+            this.uploadService.deleteImage(classify1.getImage());
+            return JsonData.buildSuccess("成功");
+        }catch (Exception e ){
+            return JsonData.buildError("删除失败,分类: " + classify1.getName() +",尚关联的有二级分类");
+        }
     }
 
-    public int update(Classify1 classify1) {
-        if (Objects.nonNull(isExist(classify1))) {
-            throw new AllException(-1, String.valueOf(isExist(classify1)));
-        }
+    public JsonData update(Classify1 classify1) {
         if (classify1.getImage() != null) {
             Classify1 classify = classify1Mapper.selectByPrimaryKey(classify1.getId());
-            this.uploadService.deleteImage(classify.getImage());
-            return this.classify1Mapper.updateByPrimaryKeySelective(classify1);
+            if (!classify1.getImage().equals(classify.getImage())){
+                this.uploadService.deleteImage(classify.getImage());
+            }
         }
-        return this.classify1Mapper.updateByPrimaryKeySelective(classify1);
+        int i = this.classify1Mapper.updateByPrimaryKeySelective(classify1);
+        if (i != 1){
+            return JsonData.buildError("更新失败");
+        }
+        return JsonData.buildSuccess("更新成功");
     }
 
 

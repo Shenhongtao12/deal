@@ -222,7 +222,7 @@ public class UserController {
 
 
     @GetMapping({"findRoleById"})
-    public ResponseEntity findRoleById(@RequestParam(value = "id",name = "id") Integer id) {
+    public ResponseEntity<User> findRoleById(@RequestParam(value = "id",name = "id") Integer id) {
         return ResponseEntity.ok(this.userService.findRoleById(id));
     }
 
@@ -233,7 +233,7 @@ public class UserController {
 
     @DeleteMapping("deleteRoleToUser")
     public ResponseEntity<JsonData> deleteRoleToUser(@RequestParam(name = "userId") Integer userId,
-                                                     @RequestParam(name = "roleId") String roleIds){
+                                                     @RequestParam(name = "roleIds") String roleIds){
         return ResponseEntity.status(200).body(userService.deleteRoleToUser(userId, roleIds));
     }
 
