@@ -19,7 +19,7 @@ public class JwtUtils {
 			token = Jwts.builder().setSubject(SUBJECT)
 					.claim("id", user.getId())
 					.claim("username", user.getUsername())
-					.claim("img", user.getImg())
+					.claim("email", user.getEmail())
 					.setIssuedAt(new Date())
 					.setExpiration(new Date(System.currentTimeMillis() + EXPIRE))  //设置到期时长
 					.signWith(SignatureAlgorithm.HS256, APPSECRET)
@@ -28,7 +28,7 @@ public class JwtUtils {
 			token = Jwts.builder().setSubject(SUBJECT)
 					.claim("id", user.getId())
 					.claim("username", user.getUsername())
-					.claim("img", user.getImg())
+					.claim("email", user.getEmail())
 					.setIssuedAt(new Date())
 					.signWith(SignatureAlgorithm.HS256, APPSECRET)
 					.compact();

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -235,6 +236,19 @@ public class UserController {
     public ResponseEntity<JsonData> deleteRoleToUser(@RequestParam(name = "userId") Integer userId,
                                                      @RequestParam(name = "roleIds") String roleIds){
         return ResponseEntity.status(200).body(userService.deleteRoleToUser(userId, roleIds));
+    }
+
+    @PostMapping("init")
+    public ResponseEntity<JsonData> initUser(@RequestBody Map<String, String> map){
+        if (JwtUtils.checkJWT(map.get("token")) == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(JsonData.buildError("请登录！"));
+        }
+        Claims claims = JwtUtils.checkJWT(map.get("token"));
+        Integer userId = (Integer) claims.get("id");
+        String username = (String) claims.get("username");
+        String email = (String) claims.get("email");
+        String token = JwtUtils.geneJsonWebToken(new User(userId, username, email));
+        return ResponseEntity.status(HttpStatus.OK).body(JsonData.buildSuccess(token, ""));
     }
 
     //shiro权限控制

@@ -40,6 +40,7 @@ public class LoginIntercepter implements HandlerInterceptor {
 				return true;
 			}
 		}
+		response.setStatus(401);
 		sendJsonMessage(response, JsonData.buildError("请登录！"));
 		return false;
 	}
