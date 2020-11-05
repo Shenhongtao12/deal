@@ -3,12 +3,11 @@ package com.sht.deal.controller;
 import com.sht.deal.domain.Classify1;
 import com.sht.deal.domain.Classify2;
 import com.sht.deal.service.Classify1Service;
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 //1.解决跨域
 @CrossOrigin
@@ -30,7 +29,7 @@ public class Classify1Controller {
     }
 
     @GetMapping("findById")
-    public ResponseEntity<Classify1> findById(@RequestParam(name = "id") Integer id) {
+    public ResponseEntity<Classify1> findById(@RequestParam(name = "id") Integer id) throws Exception {
         return ResponseEntity.ok(this.classify1Service.findById(id));
     }
 

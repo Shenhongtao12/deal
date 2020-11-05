@@ -18,7 +18,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(new LoginIntercepter())
                 .addPathPatterns("/api/token/*/**")
                 //配置不拦截的api
-                //.excludePathPatterns("/ring/user/login","/ring/user/init","/ring/user/getToken")
+                .excludePathPatterns("/api/user/save","/api/user/login","/api/user/loginAdmin","/api/user/authorError",
+                        "/api/goods/findByPage","/api/goods/findById","/api/goods/findByLike",
+                        "/api/classify1/findAll")
         ;
 
         WebMvcConfigurer.super.addInterceptors(registry);

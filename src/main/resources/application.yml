@@ -3,8 +3,8 @@ server:
   port: 8800
 #配置数据库
 database:
-  url: jdbc:mysql://172.17.240.99:3306/deal?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true
-  #url: jdbc:mysql://47.93.240.205:3306/deal?useUnicode=true&characterEncoding=utf-8&useSSL=false
+  #url: jdbc:mysql://172.24.77.44:3306/deal?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true
+  url: jdbc:mysql://47.98.128.88:3306/deal?useUnicode=true&characterEncoding=utf-8&useSSL=false
   username: root
   password: kindy0916
 spring:
@@ -20,8 +20,8 @@ spring:
       max-file-size: 10MB # 限制文件上传的大小
       enabled: true  #是否启用文件上传功能
   redis:
-    host: 172.17.240.99
-    #host: 47.93.240.205
+    #host: 172.24.77.44
+    host: 47.98.128.88
     port: 6379
     database: 0
     password: sht123
@@ -31,7 +31,7 @@ spring:
 #mybatis
 mybatis:
   configuration:
-    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  #打印sql语句包括查询结果
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  #打印sql语句包括查询结果
     #log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl  #仅打印查询语句 需配置日志级别为debug级别
     map-underscore-to-camel-case: true #下划线转驼峰配置
 #Email配置
