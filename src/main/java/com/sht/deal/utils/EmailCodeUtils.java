@@ -3,6 +3,9 @@ package com.sht.deal.utils;
 import com.sht.deal.exception.AllException;
 import org.apache.commons.mail.HtmlEmail;
 
+/**
+ * @author Aaron
+ */
 public class EmailCodeUtils
 {
 	public static String getNumber() {
