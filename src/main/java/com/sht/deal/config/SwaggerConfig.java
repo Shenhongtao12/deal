@@ -68,7 +68,7 @@ public class SwaggerConfig {
         Contact contact = new Contact("沈鸿涛", "http://eurasia.plus/swagger-ui.html", "shenhongtao12@aliyun.com");
 
         return new ApiInfoBuilder()
-                .title("欧亚圈 APIs")
+                .title("APIs")
                 //描述
                 .description("测试api接口文档")
                 //.termsOfServiceUrl("localhost:8877/swagger-ui.html")

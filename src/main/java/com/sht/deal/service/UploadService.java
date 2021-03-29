@@ -1,17 +1,18 @@
 package com.sht.deal.service;
 
 import com.sht.deal.utils.JsonData;
-
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.*;
-import javax.imageio.ImageIO;
-
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -58,7 +59,7 @@ public class UploadService {
                 //缩略图
                 String thumbnailName = uuid + "thumbnail" + suffixName;
 
-                String thumbnailUrl = "http://eurasia.plus:8800" + site + "/" + thumbnailName;
+                String thumbnailUrl = "http://101.201.151.118:8800" + site + "/" + thumbnailName;
 
                 if (size < 200 * 1024) {
                     Thumbnails.of(new String[]{site + "/" + fileName}).scale(1.0D).toFile(site + "/" + thumbnailName);
@@ -86,8 +87,8 @@ public class UploadService {
     //删除图片,传入完整的url  http://eurasia.plus:8800/deal/buy/1f33f675-edd6-4277-8daf-4c4f6f3470cethumbnail.png
     public String deleteImage(String url) {
         String resultInfo = "此url非平台创建";
-        if (url != null && url.contains("eurasia.plus:8800")){
-            String path = url.substring(24); //截掉http://eurasia.plus:8800
+        if (url != null && url.contains("101.201.151.118:8800")){
+            String path = url.substring(27); //截掉http://eurasia.plus:8800  101.201.151.118
 
             String name2 = path.substring(0, path.indexOf("thumbnail"));
             String jpg = url.substring(url.lastIndexOf("."));

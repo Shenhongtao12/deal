@@ -22,6 +22,7 @@ public class Reply
 	private Integer commentid;
 	private Integer nameid;  //给谁回复的人id 父id
 	private Integer parentid;
+	private Integer postId;
 
 	@Transient
 	private String parentname;//父name

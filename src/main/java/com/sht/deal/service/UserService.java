@@ -4,26 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.google.gson.JsonObject;
 import com.sht.deal.Mapper.UserMapper;
 import com.sht.deal.config.QQConfig;
-import com.sht.deal.domain.Fans;
 import com.sht.deal.domain.Middle;
 import com.sht.deal.domain.Role;
 import com.sht.deal.domain.User;
 import com.sht.deal.exception.AllException;
-import com.sht.deal.service.RoleService;
 import com.sht.deal.utils.*;
-
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -34,12 +21,13 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 
 @Service
@@ -138,7 +126,7 @@ public class UserService {
     public User findById(int id) {
         User user = this.userMapper.selectByPrimaryKey(id);
         if (user == null) {
-            throw new AllException(-1, "没有此用户");
+            return new User();
         }
         user.setPassword("******");
         return user;

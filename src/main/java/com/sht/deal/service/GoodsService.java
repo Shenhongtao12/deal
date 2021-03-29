@@ -10,27 +10,20 @@ import com.sht.deal.domain.Goods;
 import com.sht.deal.domain.Reply;
 import com.sht.deal.domain.User;
 import com.sht.deal.exception.AllException;
-import com.sht.deal.service.CollectService;
-import com.sht.deal.service.CommentService;
-import com.sht.deal.service.UserService;
 import com.sht.deal.utils.DateUtils;
 import com.sht.deal.utils.JsonData;
 import com.sht.deal.utils.PageResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import tk.mybatis.mapper.entity.Example;
-
 
 @Service
-@Transactional
+//@Transactional
 public class GoodsService {
     @Autowired
     private GoodsMapper goodsMapper;
@@ -68,10 +61,10 @@ public class GoodsService {
 
 
     public void checkout(Goods goods) throws Exception {
-        if (goods.getName().getBytes("UTF-8").length > 50) {
+        if (goods.getName().getBytes("UTF-8").length > 200) {
             throw new AllException(-1, "商品标题过长");
         }
-        if (goods.getIntro().getBytes("UTF-8").length > 200) {
+        if (goods.getIntro().getBytes("UTF-8").length > 500) {
             throw new AllException(-1, "介绍内容过长");
         }
         if (goods.getWeixin().getBytes("UTF-8").length > 30) {
@@ -104,11 +97,14 @@ public class GoodsService {
         return goods;
     }
 
-    public PageResult<Goods> findByPage(Integer id, Integer classify1, String orderBy, Integer userid, String goodsName, int page, int rows) {
+    public PageResult<Goods> findByPage(Integer id, String type, Integer classify1, String orderBy, Integer userid, String goodsName, int page, int rows) {
         Example example = new Example(Goods.class);
         Example.Criteria criteria = example.createCriteria();
         if (userid == null) {
             criteria.andEqualTo("state", 0);
+        }
+        if (type != null) {
+            criteria.andEqualTo("type", type);
         }
         if (id != null) {
             criteria.andEqualTo("classify2_id", id);
@@ -136,10 +132,7 @@ public class GoodsService {
         }
         PageHelper.startPage(page, rows);
         Page<Goods> goodsPage = (Page<Goods>) this.goodsMapper.selectByExample(example);
-        if (goodsPage.getTotal() < 1) {
-            throw new AllException(-1, "该分类没有商品");
-        }
-        if (userid == null) {
+        if (goodsPage.getTotal() > 0 && userid == null) {
             for (Goods goods : goodsPage) {
                 goods.setUser(this.userMapper.findById(goods.getUserid()));
             }

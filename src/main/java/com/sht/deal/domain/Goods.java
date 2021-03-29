@@ -1,5 +1,6 @@
 package com.sht.deal.domain;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import tk.mybatis.mapper.annotation.KeySql;
 
@@ -25,6 +26,8 @@ public class Goods implements Serializable
 	private Integer state;
 	private Integer classify2_id;
 	private Integer userid;
+	@ApiModelProperty(name = "type",notes = "1: goods, 2: post")
+	private String type;
 	@Transient
 	private boolean code;  //判断用户是否收藏该产品
 	@Transient
@@ -33,5 +36,6 @@ public class Goods implements Serializable
 	private User user;
 	@Transient
 	private List commentList;
+
 
 }

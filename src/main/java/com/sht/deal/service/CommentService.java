@@ -3,20 +3,16 @@ package com.sht.deal.service;
 import com.sht.deal.Mapper.CommentMapper;
 import com.sht.deal.Mapper.LikeMapper;
 import com.sht.deal.domain.Comment;
-import com.sht.deal.domain.Reply;
 import com.sht.deal.exception.AllException;
-import com.sht.deal.service.GoodsService;
-import com.sht.deal.service.ReplyService;
 import com.sht.deal.utils.DateUtils;
 import com.sht.deal.utils.JsonData;
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
+
+import java.util.List;
 
 
 @Service
@@ -33,6 +29,9 @@ public class CommentService {
     private LikeMapper likeMapper;
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private UserService userService;
 
     public List<Comment> findByGoodsId(int id, int userid) {
         List<Comment> commentList = this.commentMapper.findByGoodsId(id);
@@ -83,5 +82,30 @@ public class CommentService {
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("goodsid", goodsId);
         return commentMapper.deleteByExample(example);
+    }
+
+    /**
+     * 根据postId查找对应的commentNum
+     * @param postId post id
+     * @return result
+     */
+    public Integer countByPostId(Integer postId){
+        Example example = new Example(Comment.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("postId", postId);
+        return commentMapper.selectCountByExample(example);
+    }
+
+    public List<Comment> findByPostId(Integer postId, Integer userId, String createTime) {
+        Example example = new Example(Comment.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("postId", postId);
+        List<Comment> commentList =commentMapper.selectByExample(example);
+        for (Comment comment : commentList) {
+            comment.setUser(userService.findById(comment.getUserid()));
+            comment.setState(this.likeMapper.findLoveBy("comment", comment.getCommentid(), userId));
+            comment.setReplyList(this.replyService.getTreeReply(comment.getCommentid(), userId));
+        }
+        return commentList;
     }
 }

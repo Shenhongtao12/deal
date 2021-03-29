@@ -18,6 +18,7 @@ public class Comment {
 	private Integer userid;  //留言的发布人id
 	private Integer goodsid;
 	private Integer leaf;  //null 用来区分留言和回复
+	private Integer postId;
 
 	@Transient
 	private Object state;  //判断点赞
