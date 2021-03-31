@@ -32,6 +32,7 @@ public class PartTime {
     private Date endDateTime;
     private Date createTime;
     private Integer userid;
+    private Integer status;
 
     @Transient
     private User user;

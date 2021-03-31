@@ -13,6 +13,7 @@ import com.sht.deal.exception.AllException;
 import com.sht.deal.utils.DateUtils;
 import com.sht.deal.utils.JsonData;
 import com.sht.deal.utils.PageResult;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
@@ -46,6 +47,10 @@ public class GoodsService {
         checkout(goods);
         if (goods.getClassify2_id() == null || goods.getUserid() == null) {
             throw new AllException(-1, "请选择分类");
+        }
+        // 给post设置为不展示
+        if(StringUtils.equals("2", goods.getType())) {
+            goods.setState(1);
         }
 
         goods.setCreate_time(DateUtils.dateByString());

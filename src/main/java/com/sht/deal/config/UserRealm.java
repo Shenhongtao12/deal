@@ -18,11 +18,15 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
+/**
+ * @author Administrator
+ */
 public class UserRealm extends AuthorizingRealm {
     @Autowired
     private UserService userService;
 
     //授权
+    @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 
@@ -44,6 +48,7 @@ public class UserRealm extends AuthorizingRealm {
     }
 
     //认证
+    @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
         User user = this.userService.findByUsername(token.getUsername());

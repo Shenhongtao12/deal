@@ -10,28 +10,23 @@ import com.sht.deal.service.UserService;
 import com.sht.deal.utils.JsonData;
 import com.sht.deal.utils.JwtUtils;
 import com.sht.deal.utils.PageResult;
-
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 //1.解决跨域
 @CrossOrigin
@@ -159,7 +154,9 @@ public class UserController {
 
 
     @GetMapping({"findAll"})
-    public ResponseEntity<PageResult<User>> findAll(@RequestParam(name = "admin", required = false) String admin, @RequestParam(name = "page", defaultValue = "1") Integer page, @RequestParam(name = "rows", defaultValue = "10") Integer rows) {
+    public ResponseEntity<PageResult<User>> findAll(@RequestParam(name = "admin", required = false) String admin,
+                                                    @RequestParam(name = "page", defaultValue = "1") Integer page,
+                                                    @RequestParam(name = "rows", defaultValue = "10") Integer rows) {
         PageResult<User> userPageResult = this.userService.findAll(admin, page, rows);
         return ResponseEntity.ok(userPageResult);
     }

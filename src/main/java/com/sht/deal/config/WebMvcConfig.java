@@ -9,6 +9,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.annotation.Resource;
 
+/**
+ * @author Administrator
+ */
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
     @Resource

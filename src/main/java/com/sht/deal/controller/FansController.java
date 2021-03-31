@@ -26,7 +26,10 @@ public class FansController {
 
 
     @GetMapping({"findFansToUser"})
-    public ResponseEntity findFansToUser(@RequestParam(name = "userId", required = false) Integer userId, @RequestParam(name = "fansId", required = false) Integer fansId, @RequestParam(name = "page", defaultValue = "1") Integer page, @RequestParam(name = "rows", defaultValue = "10") Integer rows) {
+    public ResponseEntity findFansToUser(@RequestParam(name = "userId", required = false) Integer userId,
+                                         @RequestParam(name = "fansId", required = false) Integer fansId,
+                                         @RequestParam(name = "page", defaultValue = "1") Integer page,
+                                         @RequestParam(name = "rows", defaultValue = "10") Integer rows) {
         return ResponseEntity.ok(this.fansService.findFansToUser(userId, fansId, page, rows));
     }
 

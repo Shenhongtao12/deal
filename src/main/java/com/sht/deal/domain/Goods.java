@@ -23,6 +23,7 @@ public class Goods implements Serializable
 	private String images;
 	private String weixin;
 	private String create_time;
+	// 0 展示 1 待审批或下架 2 拒绝
 	private Integer state;
 	private Integer classify2_id;
 	private Integer userid;

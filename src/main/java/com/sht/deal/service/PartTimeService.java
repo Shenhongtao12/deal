@@ -30,6 +30,7 @@ public class PartTimeService {
 
     public JsonData add(PartTime partTime) throws Exception {
         partTime.setCreateTime(new Date());
+        partTime.setStatus(1);
         int i = this.partTimeMapper.insertSelective(partTime);
         if (i != 1) {
             throw new AllException(-1, "添加失败");
@@ -46,6 +47,10 @@ public class PartTimeService {
 
         if (userId != null) {
             criteria.andEqualTo("userid", userId);
+        }
+
+        if (userId == null) {
+            criteria.andEqualTo("status", 0);
         }
         PageHelper.startPage(page, rows);
         List<PartTime> buyList = this.partTimeMapper.selectByExample(example);
